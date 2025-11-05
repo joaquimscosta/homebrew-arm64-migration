@@ -1,0 +1,183 @@
+# Homebrew ARM64 Migration - .gitignore
+
+# ================================
+# Personal/Local Files
+# ================================
+
+# Archive directory (personal analysis docs)
+archive/
+
+# Personal notes and drafts
+*.local.md
+*.draft.md
+NOTES.md
+TODO.md
+
+# ================================
+# Logs and Temporary Files
+# ================================
+
+# Installation logs
+*.log
+logs/
+homebrew-install-*.log
+
+# Temporary files
+*.tmp
+*.temp
+.DS_Store
+._*
+
+# ================================
+# Backup Files
+# ================================
+
+# Script backups
+*.bak
+*.backup
+*.old
+*~
+
+# Configuration backups
+*.conf.bak
+*.json.bak
+
+# ================================
+# Editor and IDE Files
+# ================================
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# JetBrains IDEs (IntelliJ, WebStorm, etc.)
+.idea/
+*.iml
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+.netrwhist
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+
+# ================================
+# macOS
+# ================================
+
+# Finder
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# ================================
+# Testing and Development
+# ================================
+
+# Test outputs
+test_results/
+test-output.txt
+
+# Coverage reports
+coverage/
+*.coverage
+
+# Debug files
+debug.log
+debug-*.log
+
+# ================================
+# User-Specific Configuration
+# ================================
+
+# Claude Code settings (keep .claude/settings.json, ignore local overrides)
+.claude/settings.local.json
+.claude/*.local.json
+
+# User-specific package customizations
+custom-packages.local.json
+my-packages.json
+
+# ================================
+# Build and Distribution
+# ================================
+
+# Compiled outputs (if any shell script compilation is added later)
+bin/
+build/
+dist/
+
+# ================================
+# Dependencies (if added later)
+# ================================
+
+# Node modules (if any Node.js tooling is added)
+node_modules/
+
+# Python virtual environments (if any Python tooling is added)
+venv/
+.venv/
+env/
+.env/
+
+# ================================
+# Security
+# ================================
+
+# Environment variables with secrets
+.env
+.env.local
+.env.*.local
+
+# API keys and credentials
+credentials.json
+secrets.yml
+*.pem
+*.key
+
+# ================================
+# GitHub Actions Artifacts
+# ================================
+
+# Workflow artifacts (if downloaded locally)
+.github/workflows/artifacts/
+
+# ================================
+# Homebrew-Specific
+# ================================
+
+# Homebrew Lockfile (if generated)
+Brewfile.lock.json
+
+# Homebrew installation artifacts
+Cellar/
+Caskroom/

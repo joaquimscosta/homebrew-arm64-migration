@@ -1,0 +1,54 @@
+MIT License
+
+Copyright (c) 2025 Joaquim Costa
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+DISCLAIMER:
+
+This software is provided for educational and convenience purposes. While every
+effort has been made to ensure the script works safely and correctly, the authors
+make no guarantees about its fitness for any particular purpose.
+
+IMPORTANT WARNINGS:
+
+1. BACKUP YOUR SYSTEM: Always create a backup before running migration scripts
+   that modify your package manager or system configuration.
+
+2. REVIEW BEFORE RUNNING: Read and understand the script before executing it,
+   especially if using curl-to-bash installation methods.
+
+3. USE AT YOUR OWN RISK: The authors are not responsible for:
+   - Data loss
+   - System instability
+   - Software conflicts
+   - Time spent troubleshooting
+   - Any other issues that may arise
+
+4. NO WARRANTY: This software comes with ABSOLUTELY NO WARRANTY. See the MIT
+   License terms above for the complete legal disclaimer.
+
+5. SYSTEM REQUIREMENTS: This script is designed for Apple Silicon Macs running
+   macOS Sequoia 15.6+ and has been tested on that configuration. Behavior on
+   other systems may vary.
+
+By using this software, you acknowledge that you have read this disclaimer and
+agree to use the software at your own risk.

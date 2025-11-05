@@ -1,0 +1,511 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "created_for": "Apple Silicon (ARM64)",
+    "homebrew_path": "/opt/homebrew",
+    "total_packages_analyzed": 146,
+    "compatible_chips": ["M1", "M2", "M3", "M4"]
+  },
+
+  "essential": {
+    "description": "Must-have tools for any developer - auto-installed without prompting",
+    "packages": [
+      "git",
+      "gh",
+      "curl",
+      "wget",
+      "jq",
+      "yq",
+      "tree",
+      "htop",
+      "bat",
+      "tldr",
+      "mas",
+      "grep",
+      "coreutils",
+      "sqlite",
+      "openssl@3",
+      "ca-certificates",
+      "diff-so-fancy",
+      "git-lfs",
+      "nmap"
+    ]
+  },
+
+  "version_managers": {
+    "description": "Language version managers - recommended over Homebrew language installations",
+    "uv": {
+      "package": "uv",
+      "status": "not_installed",
+      "language": "Python",
+      "priority": "highest_2025",
+      "reason": "Modern unified Python toolkit by Astral (Ruff creators). Combines Python version management, dependency resolution, virtual environments, and package management in one blazingly fast tool. 10-100x faster than pip, downloads pre-built binaries (no compilation). Replaces pip, pipx, pyenv, virtualenv, and pip-tools.",
+      "replaces": ["python@3.11", "python@3.12", "python@3.13", "python@3.14", "python", "pyenv", "pip", "pipx"],
+      "install_command": "curl -LsSf https://astral.sh/uv/install.sh | sh",
+      "homebrew_alternative": "brew install uv",
+      "post_install": [
+        "Install Python: uv python install 3.12",
+        "Set project Python: uv python pin 3.12",
+        "Create venv: uv venv",
+        "Install packages: uv pip install <package>",
+        "Install CLI tools: uv tool install ruff",
+        "Run scripts: uv run script.py"
+      ],
+      "benefits": [
+        "Unified workflow (versions + dependencies + tools)",
+        "Pre-built Python binaries (install in seconds)",
+        "Cross-platform lockfiles (develop on Mac, deploy on Linux)",
+        "Drop-in pip replacement (uv pip install works the same)",
+        "No compilation required (unlike pyenv)",
+        "Cargo-like experience for Python"
+      ],
+      "user_preference": "PREFERRED"
+    },
+    "pyenv": {
+      "package": "pyenv",
+      "status": "already_installed",
+      "language": "Python",
+      "priority": "alternative",
+      "reason": "Established Python version manager. Mature and stable, but only handles version management. Requires separate tools for dependencies (pip, poetry) and compiles Python from source (slow).",
+      "replaces": ["python@3.11", "python@3.12", "python@3.13", "python@3.14", "python"],
+      "alternative": "uv (modern unified approach - USER PREFERENCE)",
+      "install_command": "brew install pyenv",
+      "post_install": [
+        "Add to ~/.zshrc: eval \"$(pyenv init -)\"",
+        "Install Python: pyenv install 3.12.1",
+        "Set global: pyenv global 3.12.1"
+      ]
+    },
+    "nvm": {
+      "package": "nvm",
+      "status": "already_installed",
+      "language": "Node.js",
+      "priority": "high",
+      "reason": "Most popular Node.js version manager with largest community support.",
+      "modern_alternatives": {
+        "fnm": "Rust-based, 40x faster than nvm, same commands",
+        "volta": "Automatic version switching based on project, best for teams"
+      },
+      "replaces": ["node", "npm"],
+      "install_command": "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash",
+      "post_install": [
+        "Install Node: nvm install --lts",
+        "Set default: nvm alias default lts/*"
+      ]
+    },
+    "rbenv": {
+      "package": "rbenv",
+      "status": "not_installed",
+      "language": "Ruby",
+      "priority": "medium",
+      "reason": "Lightweight, transparent Ruby version manager. Non-intrusive (doesn't override shell commands like RVM).",
+      "replaces": ["ruby"],
+      "install_command": "brew install rbenv ruby-build",
+      "post_install": [
+        "Add to ~/.zshrc: eval \"$(rbenv init - zsh)\"",
+        "Install Ruby: rbenv install 3.2.2",
+        "Set global: rbenv global 3.2.2"
+      ]
+    },
+    "tfenv": {
+      "package": "tfenv",
+      "status": "not_installed",
+      "language": "Terraform/OpenTofu",
+      "priority": "high",
+      "reason": "Essential for Terraform version management. Terraform changed to BSL license and is deprecated in Homebrew. Use tfenv + OpenTofu (open-source fork).",
+      "replaces": ["terraform"],
+      "install_command": "brew install tfenv",
+      "companion_tool": "opentofu",
+      "post_install": [
+        "Install OpenTofu: brew install opentofu",
+        "Create alias: alias terraform='tofu'",
+        "Use .terraform-version file for team consistency"
+      ]
+    }
+  },
+
+  "languages": {
+    "description": "Programming language runtimes - prompt user with version manager recommendations",
+    "php": {
+      "package": "php",
+      "priority": "optional",
+      "prompt": "Do you do PHP development?",
+      "companion": ["composer"],
+      "note": "PHP 8.4+ has good ARM64 support"
+    },
+    "openjdk": {
+      "package": "openjdk",
+      "priority": "recommended",
+      "prompt": "Install OpenJDK as system fallback Java?",
+      "note": "SDKMAN already handles Java versions. This is just a system fallback.",
+      "companion_tool": "SDKMAN (already installed)"
+    },
+    "perl": {
+      "package": "perl",
+      "priority": "keep",
+      "note": "Keep - often required by system tools and build scripts"
+    },
+    "go_official": {
+      "package": "go",
+      "priority": "skip",
+      "reason": "Official Go installer at /usr/local/go is preferred. Use gvm only if you need multiple versions.",
+      "external": true,
+      "location": "/usr/local/go",
+      "install_url": "https://go.dev/dl/",
+      "version_manager": "gvm (optional for multi-version)"
+    }
+  },
+
+  "cloud_devops": {
+    "description": "Cloud platforms and DevOps automation tools",
+    "prompt": "Install cloud & DevOps tools?",
+    "packages": [
+      "awscli",
+      "azure-cli",
+      "google-cloud-sdk",
+      "helm",
+      "k9s",
+      "ansible",
+      "ansible-lint"
+    ],
+    "optional_additions": [
+      "kubectl",
+      "kubectx",
+      "kubens",
+      "stern",
+      "terraform-docs",
+      "tflint"
+    ]
+  },
+
+  "build_tools": {
+    "description": "Compilers, build systems, and development libraries",
+    "prompt": "Install build tools for compiling from source?",
+    "packages": [
+      "cmake",
+      "autoconf",
+      "automake",
+      "libtool",
+      "pkg-config",
+      "bison",
+      "m4",
+      "make"
+    ],
+    "note": "Essential if you compile software from source or work with C/C++ projects"
+  },
+
+  "cli_productivity": {
+    "description": "Modern CLI tools to enhance terminal productivity",
+    "prompt": "Install modern CLI productivity tools?",
+    "packages": {
+      "ripgrep": {
+        "description": "Faster grep with better defaults (respects .gitignore)",
+        "replaces": "grep (traditional)"
+      },
+      "eza": {
+        "description": "Modern ls replacement with colors, icons, Git integration",
+        "replaces": "ls/exa (exa is unmaintained)"
+      },
+      "fd": {
+        "description": "Simple, fast alternative to find command",
+        "replaces": "find"
+      },
+      "httpie": {
+        "description": "User-friendly HTTP client with intuitive syntax",
+        "replaces": "curl (for interactive use)"
+      },
+      "delta": {
+        "description": "Better git diff with syntax highlighting",
+        "enhances": "git"
+      },
+      "fzf": {
+        "description": "Fuzzy finder for command history, files, etc.",
+        "integrates": "command-line workflows"
+      },
+      "zoxide": {
+        "description": "Smart cd that learns your habits",
+        "replaces": "cd"
+      },
+      "procs": {
+        "description": "Modern ps replacement with better output",
+        "replaces": "ps"
+      }
+    }
+  },
+
+  "database_clients": {
+    "description": "Database client libraries and CLI tools (not servers)",
+    "prompt": "Install database client tools?",
+    "packages": [
+      "mysql-client",
+      "libpq",
+      "sqlite"
+    ],
+    "note": "These are client tools only. Install actual database servers separately or via Docker."
+  },
+
+  "media_processing": {
+    "description": "Image, video, and audio processing tools",
+    "prompt": "Do you work with media files (images, video, audio)?",
+    "packages": [
+      "imagemagick",
+      "ghostscript",
+      "tesseract"
+    ],
+    "ffmpeg_codecs": [
+      "aom",
+      "dav1d",
+      "x264",
+      "x265",
+      "ffmpeg"
+    ],
+    "note": "FFmpeg and codecs are large. Only install if you process multimedia.",
+    "priority": "optional"
+  },
+
+  "compression_libs": {
+    "description": "Compression libraries (auto-installed as dependencies)",
+    "packages": [
+      "zstd",
+      "lz4",
+      "xz",
+      "brotli",
+      "zlib",
+      "snappy",
+      "lzo",
+      "gzip",
+      "libarchive"
+    ],
+    "install_mode": "auto",
+    "note": "These are dependencies. Homebrew installs them automatically when needed."
+  },
+
+  "networking_security": {
+    "description": "Networking and security libraries (auto-installed as dependencies)",
+    "packages": [
+      "openssl@3",
+      "ca-certificates",
+      "gnutls",
+      "libssh",
+      "libssh2",
+      "curl",
+      "krb5",
+      "nettle",
+      "libsodium",
+      "c-ares",
+      "libnghttp2",
+      "nss",
+      "mbedtls"
+    ],
+    "install_mode": "auto",
+    "note": "Essential security libraries. Installed automatically as dependencies."
+  },
+
+  "development_libs": {
+    "description": "Development libraries for graphics, XML, math, etc.",
+    "categories": {
+      "graphics": ["cairo", "freetype", "fontconfig", "harfbuzz", "pixman", "libpng", "jpeg-turbo", "libtiff", "webp"],
+      "xml_text": ["expat", "libxml2", "libyaml", "oniguruma", "pcre2"],
+      "math": ["gmp", "mpfr", "eigen", "imath"],
+      "x11": ["libx11", "libxcb", "libxext", "libxrender", "libxau", "libxdmcp"]
+    },
+    "install_mode": "auto",
+    "note": "80+ libraries. Homebrew manages these as dependencies automatically."
+  },
+
+  "deprecated": {
+    "description": "Packages that should not be installed",
+    "python@2": {
+      "reason": "End of life since January 2020. Security risk.",
+      "upgrade_to": "python3 via pyenv",
+      "action": "skip"
+    },
+    "terraform": {
+      "reason": "Deprecated in Homebrew due to BSL license change",
+      "upgrade_to": "opentofu + tfenv",
+      "action": "replace"
+    },
+    "python@3.11": {
+      "reason": "Use pyenv for version management instead",
+      "upgrade_to": "pyenv",
+      "action": "skip"
+    },
+    "python@3.12": {
+      "reason": "Use pyenv for version management instead",
+      "upgrade_to": "pyenv",
+      "action": "skip"
+    },
+    "python@3.13": {
+      "reason": "Use pyenv for version management instead",
+      "upgrade_to": "pyenv",
+      "action": "skip"
+    },
+    "python@3.14": {
+      "reason": "Use pyenv for version management instead",
+      "upgrade_to": "pyenv",
+      "action": "skip"
+    },
+    "node": {
+      "reason": "Use nvm/fnm/volta for version management instead",
+      "upgrade_to": "nvm (already installed)",
+      "action": "skip"
+    }
+  },
+
+  "casks": {
+    "description": "GUI applications via Homebrew Cask",
+    "prompt": "Install GUI applications via Homebrew Cask?",
+    "applications": {
+      "alfred": {
+        "description": "Spotlight replacement and productivity tool",
+        "priority": "high"
+      },
+      "caffeine": {
+        "description": "Keeps Mac awake",
+        "priority": "medium"
+      },
+      "cheatsheet": {
+        "description": "Shows keyboard shortcuts",
+        "priority": "medium"
+      },
+      "claude-code": {
+        "description": "AI-powered code editor",
+        "priority": "high",
+        "note": "Ensure ARM64 version"
+      },
+      "discord": {
+        "description": "Communication platform",
+        "priority": "personal"
+      },
+      "firefox": {
+        "description": "Web browser",
+        "priority": "high"
+      },
+      "iterm2": {
+        "description": "Terminal emulator",
+        "priority": "high"
+      }
+    },
+    "note": "Casks are personal preference. Select what you actually use."
+  },
+
+  "modern_alternatives": {
+    "description": "Suggested modern replacements for traditional Unix tools",
+    "replacements": [
+      {
+        "traditional": "grep",
+        "modern": "ripgrep (rg)",
+        "reason": "Faster, respects .gitignore, better regex support",
+        "keep_both": true
+      },
+      {
+        "traditional": "ls",
+        "modern": "eza",
+        "reason": "Colors, icons, Git integration, tree view",
+        "keep_both": true
+      },
+      {
+        "traditional": "find",
+        "modern": "fd",
+        "reason": "Simpler syntax, faster, respects .gitignore",
+        "keep_both": true
+      },
+      {
+        "traditional": "cat",
+        "modern": "bat",
+        "reason": "Syntax highlighting, Git integration, line numbers",
+        "keep_both": true,
+        "note": "bat already in essential tools"
+      },
+      {
+        "traditional": "curl",
+        "modern": "httpie",
+        "reason": "User-friendly, colorized output, JSON support",
+        "keep_both": true
+      },
+      {
+        "traditional": "ps",
+        "modern": "procs",
+        "reason": "Better output formatting, search capabilities",
+        "keep_both": true
+      },
+      {
+        "traditional": "cd",
+        "modern": "zoxide",
+        "reason": "Learns your habits, jump to frequent directories",
+        "keep_both": true
+      }
+    ]
+  },
+
+  "installation_order": {
+    "description": "Recommended installation sequence",
+    "phases": [
+      {
+        "phase": 1,
+        "name": "Homebrew Installation",
+        "action": "Install Homebrew to /opt/homebrew",
+        "verify": "Architecture check (ARM64)"
+      },
+      {
+        "phase": 2,
+        "name": "Essential Tools",
+        "action": "Auto-install 19 essential packages",
+        "prompt": false
+      },
+      {
+        "phase": 3,
+        "name": "Version Managers",
+        "action": "Prompt for each version manager with explanation",
+        "packages": ["pyenv", "nvm", "rbenv", "tfenv"]
+      },
+      {
+        "phase": 4,
+        "name": "Languages",
+        "action": "Prompt with version manager recommendations",
+        "packages": ["php", "openjdk", "perl"]
+      },
+      {
+        "phase": 5,
+        "name": "Cloud/DevOps",
+        "action": "Interactive category prompt",
+        "packages": "cloud_devops"
+      },
+      {
+        "phase": 6,
+        "name": "Build Tools",
+        "action": "Interactive category prompt",
+        "packages": "build_tools"
+      },
+      {
+        "phase": 7,
+        "name": "Modern CLI Tools",
+        "action": "Interactive category prompt",
+        "packages": "cli_productivity"
+      },
+      {
+        "phase": 8,
+        "name": "Database Clients",
+        "action": "Interactive category prompt",
+        "packages": "database_clients"
+      },
+      {
+        "phase": 9,
+        "name": "Media Processing",
+        "action": "Interactive category prompt (optional)",
+        "packages": "media_processing"
+      },
+      {
+        "phase": 10,
+        "name": "GUI Applications",
+        "action": "Interactive cask selection",
+        "packages": "casks"
+      },
+      {
+        "phase": 11,
+        "name": "Post-Install Report",
+        "action": "Health check, verification, next steps"
+      }
+    ]
+  }
+}

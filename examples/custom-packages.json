@@ -1,0 +1,262 @@
+{
+  "$schema": "../package-categories.json",
+  "description": "Example custom package configuration for advanced users",
+
+  "metadata": {
+    "version": "1.0.0",
+    "created_for": "Custom Installation",
+    "note": "This file demonstrates how to customize package selections"
+  },
+
+  "custom_categories": {
+    "description": "Add your own custom package categories here",
+
+    "web_development": {
+      "description": "Web development tools",
+      "prompt": "Install web development tools?",
+      "packages": [
+        "nginx",
+        "caddy",
+        "mkcert",
+        "httpie",
+        "jq",
+        "yq"
+      ],
+      "post_install": [
+        "Generate local CA: mkcert -install",
+        "Create local cert: mkcert localhost 127.0.0.1 ::1"
+      ]
+    },
+
+    "data_science": {
+      "description": "Data science and analytics tools",
+      "prompt": "Install data science tools?",
+      "packages": [
+        "jupyterlab",
+        "pandas",
+        "numpy",
+        "matplotlib"
+      ],
+      "note": "Consider using uv for Python-based data science tools",
+      "alternative": "uv tool install jupyterlab pandas numpy matplotlib"
+    },
+
+    "security_tools": {
+      "description": "Security and penetration testing tools",
+      "prompt": "Install security tools?",
+      "packages": [
+        "nmap",
+        "wireshark",
+        "hashcat",
+        "john",
+        "metasploit"
+      ],
+      "warning": "Some tools may require additional permissions"
+    },
+
+    "productivity": {
+      "description": "Personal productivity applications",
+      "prompt": "Install productivity apps?",
+      "casks": [
+        "notion",
+        "obsidian",
+        "raycast",
+        "rectangle",
+        "stats"
+      ]
+    },
+
+    "rust_toolchain": {
+      "description": "Rust development environment",
+      "prompt": "Install Rust development tools?",
+      "packages": [
+        "rust",
+        "rust-analyzer",
+        "rustup-init"
+      ],
+      "post_install": [
+        "Initialize rustup: rustup-init",
+        "Add components: rustup component add clippy rustfmt"
+      ]
+    },
+
+    "container_tools": {
+      "description": "Container and orchestration tools",
+      "prompt": "Install container tools?",
+      "packages": [
+        "docker",
+        "docker-compose",
+        "podman",
+        "kubectl",
+        "kubectx",
+        "stern",
+        "k9s"
+      ],
+      "casks": [
+        "docker"
+      ],
+      "post_install": [
+        "Start Docker Desktop",
+        "Verify: docker --version",
+        "Verify: kubectl version --client"
+      ]
+    }
+  },
+
+  "override_defaults": {
+    "description": "Override default package selections",
+    "note": "These will replace defaults in the main script",
+
+    "version_managers": {
+      "python": {
+        "tool": "pyenv",
+        "reason": "Prefer pyenv over uv for this setup",
+        "install": "brew install pyenv"
+      },
+      "node": {
+        "tool": "volta",
+        "reason": "Team uses Volta for automatic version switching",
+        "install": "brew install volta"
+      }
+    },
+
+    "skip_categories": {
+      "description": "Categories to skip entirely",
+      "categories": [
+        "media_processing",
+        "database_clients"
+      ],
+      "reason": "Not needed for this setup"
+    }
+  },
+
+  "custom_casks": {
+    "description": "Additional GUI applications to install",
+    "browsers": [
+      "google-chrome",
+      "firefox",
+      "brave-browser",
+      "microsoft-edge"
+    ],
+    "development": [
+      "visual-studio-code",
+      "sublime-text",
+      "iterm2",
+      "warp",
+      "tableplus",
+      "postman"
+    ],
+    "communication": [
+      "slack",
+      "discord",
+      "zoom",
+      "microsoft-teams"
+    ],
+    "utilities": [
+      "alfred",
+      "raycast",
+      "rectangle",
+      "stats",
+      "bartender",
+      "cleanmymac"
+    ]
+  },
+
+  "usage_examples": {
+    "minimal_install": {
+      "description": "Minimal installation for basic development",
+      "categories": [
+        "essential",
+        "version_managers",
+        "modern_cli_tools"
+      ],
+      "skip": [
+        "cloud_devops",
+        "build_tools",
+        "media_processing",
+        "database_clients",
+        "casks"
+      ]
+    },
+
+    "full_stack_web": {
+      "description": "Full-stack web development setup",
+      "categories": [
+        "essential",
+        "version_managers",
+        "web_development",
+        "database_clients",
+        "modern_cli_tools",
+        "container_tools"
+      ],
+      "version_managers": {
+        "python": "uv",
+        "node": "fnm",
+        "ruby": "rbenv"
+      },
+      "additional_casks": [
+        "visual-studio-code",
+        "iterm2",
+        "docker",
+        "tableplus",
+        "postman"
+      ]
+    },
+
+    "devops_engineer": {
+      "description": "DevOps and infrastructure setup",
+      "categories": [
+        "essential",
+        "version_managers",
+        "cloud_devops",
+        "container_tools",
+        "modern_cli_tools"
+      ],
+      "additional_packages": [
+        "terraform",
+        "ansible",
+        "packer",
+        "vault"
+      ],
+      "additional_casks": [
+        "visual-studio-code",
+        "iterm2",
+        "docker"
+      ]
+    },
+
+    "data_engineer": {
+      "description": "Data engineering and analytics setup",
+      "categories": [
+        "essential",
+        "version_managers",
+        "data_science",
+        "database_clients",
+        "modern_cli_tools"
+      ],
+      "version_managers": {
+        "python": "uv"
+      },
+      "additional_packages": [
+        "apache-spark",
+        "postgresql",
+        "redis"
+      ]
+    }
+  },
+
+  "notes": {
+    "customization_instructions": [
+      "1. Copy this file to your project directory",
+      "2. Modify categories to match your needs",
+      "3. Add custom packages to appropriate sections",
+      "4. Update version manager preferences in override_defaults",
+      "5. Reference this file when running the install script (future enhancement)"
+    ],
+    "future_enhancements": [
+      "Script support for custom package files",
+      "Profile-based installations (web dev, devops, data science)",
+      "Team Brewfile generation from custom packages"
+    ]
+  }
+}

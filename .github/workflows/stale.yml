@@ -1,0 +1,57 @@
+name: Close Stale Issues and PRs
+
+on:
+  schedule:
+    # Run once per week (Sundays at 00:00 UTC)
+    - cron: '0 0 * * 0'
+  workflow_dispatch: # Allow manual triggering
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          # Configuration
+          days-before-stale: 60
+          days-before-close: 7
+
+          # PR settings
+          stale-pr-message: |
+            This PR has been inactive for 60 days and will be closed in 7 days if no further activity occurs.
+
+            If you're still working on this:
+            - Leave a comment to keep it open
+            - Push new commits to refresh the timer
+
+            You can always reopen later if needed. Thank you for your contribution! 🙏
+
+          close-pr-message: |
+            Closing due to inactivity. Feel free to reopen if you'd like to continue working on this.
+
+            Alternative: You can maintain this change in your own fork and share it with the community.
+
+          stale-pr-label: 'stale'
+          exempt-pr-labels: 'in-progress,security,critical'
+
+          # Issue settings (more lenient)
+          stale-issue-message: |
+            This issue has been inactive for 60 days. Adding 'stale' label.
+
+            If this is still relevant:
+            - Leave a comment to remove the label
+            - Provide additional details if possible
+
+          close-issue-message: |
+            Closing due to inactivity. Feel free to reopen if still relevant.
+
+          stale-issue-label: 'stale'
+          exempt-issue-labels: 'bug,enhancement,help-wanted,good-first-issue'
+          days-before-issue-close: 14 # Issues get more time than PRs
+
+          # Only mark as stale, don't auto-close issues (more forgiving)
+          close-issue-reason: 'not_planned'

@@ -1,0 +1,52 @@
+name: ShellCheck
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - '**.sh'
+      - '.github/workflows/shellcheck.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - '**.sh'
+      - '.github/workflows/shellcheck.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  shellcheck:
+    name: ShellCheck Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          severity: warning
+          ignore_paths: archive
+        env:
+          SHELLCHECK_OPTS: --shell=bash --enable=all --external-sources
+
+      - name: Lint install-homebrew-arm64.sh
+        run: |
+          echo "Analyzing install-homebrew-arm64.sh..."
+          shellcheck --severity=warning --shell=bash install-homebrew-arm64.sh
+
+      - name: Lint cleanup-homebrew-remnants.sh
+        run: |
+          echo "Analyzing cleanup-homebrew-remnants.sh..."
+          shellcheck --severity=warning --shell=bash cleanup-homebrew-remnants.sh
+
+      - name: Report
+        if: always()
+        run: |
+          echo "✅ ShellCheck analysis complete"
+          echo ""
+          echo "Scripts analyzed:"
+          echo "  - install-homebrew-arm64.sh"
+          echo "  - cleanup-homebrew-remnants.sh"

@@ -1,0 +1,312 @@
+# Homebrew ARM64 Migration Tool
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Shell Script](https://img.shields.io/badge/Shell-Bash-green.svg)](https://www.gnu.org/software/bash/)
+[![macOS](https://img.shields.io/badge/macOS-Sequoia%2015.6+-blue.svg)](https://www.apple.com/macos/)
+[![Apple Silicon](https://img.shields.io/badge/Apple%20Silicon-M1%20|%20M2%20|%20M3%20|%20M4-purple.svg)](https://support.apple.com/en-us/116943)
+
+**Intelligent, interactive Homebrew ARM64 installation system for Apple Silicon Macs.**
+
+Migrating from Intel Homebrew (`/usr/local`) to native ARM64 Homebrew (`/opt/homebrew`)? Or setting up Homebrew for the first time on an M-series Mac? This script provides a comprehensive, safe, and educational installation experience with modern best practices for 2025.
+
+---
+
+## ✨ Features
+
+- **🔒 Strict ARM64 Verification** - Ensures you're installing native ARM64 binaries, not x86_64 under Rosetta 2
+- **🎓 Educational Prompts** - Explains *why* to use modern tools (uv, fnm, SDKMAN) over traditional approaches
+- **⚡ Modern Version Managers** - Prioritizes uv for Python, fnm/Volta for Node.js, SDKMAN for Java/JVM
+- **📦 Smart Package Selection** - 146 packages analyzed, categorized into 11 installation phases
+- **🔄 Auto-Upgrade Deprecated** - Automatically replaces python@2, terraform, etc. with modern alternatives
+- **☁️ Multi-Cloud Support** - AWS CLI, Azure CLI, Google Cloud SDK with post-install setup guidance
+- **🛡️ Safe & Reversible** - Dry-run mode, comprehensive logging, health checks
+- **🎨 Modern CLI Tools** - ripgrep, eza, fd, bat, delta, fzf, zoxide, and more
+
+---
+
+## 🚀 Quick Start
+
+### Two-Step Safe Installation (Recommended)
+
+```bash
+# 1. Download and review the script
+curl -fsSL https://raw.githubusercontent.com/joaquimscosta/homebrew-arm64-migration/main/install-homebrew-arm64.sh -o install-homebrew-arm64.sh
+chmod +x install-homebrew-arm64.sh
+
+# 2. Preview first (no changes made)
+./install-homebrew-arm64.sh --dry-run
+
+# 3. Run installation (interactive prompts)
+./install-homebrew-arm64.sh
+```
+
+### One-Line Installation (Review First!)
+
+```bash
+# ⚠️ SECURITY WARNING: Only use this if you trust the source
+# Review the script at the GitHub URL above before running
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/joaquimscosta/homebrew-arm64-migration/main/install-homebrew-arm64.sh)"
+```
+
+---
+
+## 📋 Prerequisites
+
+- **Apple Silicon Mac** (M1, M2, M3, or M4)
+- **macOS Sequoia 15.6+** (may work on older versions, but tested on 15.6+)
+- **Command Line Tools** installed (`xcode-select --install`)
+- **Administrator access** (for installing Homebrew and changing shell)
+
+---
+
+## 📖 What This Script Does
+
+### Installation Phases
+
+The script guides you through **11 sequential phases**:
+
+1. **Homebrew Installation** - Installs ARM64 Homebrew to `/opt/homebrew`
+2. **Essential Tools** - Auto-installs 19 must-have developer tools
+3. **Version Managers** - Prompts for uv (Python), fnm (Node.js), rbenv (Ruby), tfenv (Terraform/OpenTofu)
+4. **Language Runtimes** - Interactive prompts for PHP, OpenJDK, Perl, Go
+5. **Cloud/DevOps Tools** - AWS CLI, Azure CLI, GCP CLI, Helm, K9s, Ansible
+6. **Build Tools** - cmake, autoconf, make, etc. (for compiling from source)
+7. **Modern CLI Tools** - ripgrep, eza, fd, bat, delta, fzf, zoxide, procs
+8. **Database Clients** - MySQL, PostgreSQL client libraries
+9. **Media Processing** - ImageMagick, FFmpeg (optional, large)
+10. **GUI Applications** - Homebrew Cask apps (Alfred, iTerm2, Firefox, etc.)
+11. **Post-Install Report** - Health check, verification, next steps
+
+### Version Manager Recommendations
+
+#### Python: uv (Unified Toolkit - 2025 Standard)
+
+**Why uv over pyenv?**
+- Unified workflow (versions + dependencies + tools in one)
+- 10-100x faster than pip (Rust-based)
+- Pre-built binaries (install Python in seconds, not minutes)
+- Drop-in pip replacement
+- No compilation required
+
+```bash
+# After installing uv
+uv python install 3.12
+uv python pin 3.12
+uv venv
+uv pip install requests
+```
+
+#### Node.js: fnm or Volta (40x Faster than nvm)
+
+**Why fnm?**
+- Rust-based, blazingly fast
+- Same commands as nvm
+- Cross-platform
+
+```bash
+# After installing fnm
+fnm install --lts
+fnm default lts-latest
+```
+
+#### Java/JVM: SDKMAN (Industry Standard)
+
+**Why SDKMAN over Homebrew?**
+- Manages multiple JVM distributions (Amazon Corretto, GraalVM, Temurin)
+- Handles Gradle, Maven, Kotlin, Scala, Groovy
+- Industry-standard tool
+
+```bash
+# After installing SDKMAN
+sdk install java 21.0.1-tem
+sdk default java 21.0.1-tem
+```
+
+---
+
+## 🔧 Usage
+
+### Command-Line Options
+
+```bash
+./install-homebrew-arm64.sh [OPTIONS]
+
+Options:
+  --dry-run         Preview installation without making changes
+  --auto-yes        Auto-approve all prompts (use with caution)
+  --start-at=N      Start at specific phase (1-11)
+  --help            Show help message
+```
+
+### Examples
+
+```bash
+# Preview what will be installed
+./install-homebrew-arm64.sh --dry-run
+
+# Interactive installation (recommended)
+./install-homebrew-arm64.sh
+
+# Install everything without prompts (use carefully)
+./install-homebrew-arm64.sh --auto-yes
+
+# Resume from Phase 5 (Cloud/DevOps tools)
+./install-homebrew-arm64.sh --start-at=5
+```
+
+---
+
+## 🧹 Cleanup Scripts
+
+If you previously had Intel Homebrew installed, use these cleanup scripts to remove remnants:
+
+### Option 1: Comprehensive Cleanup (Recommended)
+
+Removes Homebrew directories and installations:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/joaquimscosta/homebrew-arm64-migration/main/cleanup-homebrew-remnants.sh -o cleanup-homebrew-remnants.sh
+chmod +x cleanup-homebrew-remnants.sh
+./cleanup-homebrew-remnants.sh
+```
+
+**Removes:** Intel Homebrew directory, Python site-packages, orphaned npm packages, config files
+**Preserves:** Non-Homebrew software (Go, .NET SDK, Docker, Microsoft tools)
+
+### Option 2: Targeted Cleanup
+
+Removes only specific broken symlinks and scripts:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/joaquimscosta/homebrew-arm64-migration/main/cleanup-broken-files.sh -o cleanup-broken-files.sh
+chmod +x cleanup-broken-files.sh
+./cleanup-broken-files.sh --dry-run  # Preview first
+./cleanup-broken-files.sh
+```
+
+**Removes:** Broken Python scripts, broken npm CLI symlinks, broken man pages
+**Preserves:** All directories and legitimate software
+
+**Recommendation:** Run Option 1 for complete cleanup, or Option 2 for a safer, more conservative approach.
+
+---
+
+## 📚 Documentation
+
+- **[Installation Guide](docs/INSTALLATION-GUIDE.md)** - Comprehensive guide with detailed explanations
+- **[Migration Case Study](docs/MIGRATION-CASE-STUDY.md)** - Real-world migration from Intel to ARM64
+- **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
+
+---
+
+## ⚠️ Security Notice
+
+**Always review scripts before running them, especially with `curl | bash`.**
+
+This script:
+- ✅ Is open-source and auditable
+- ✅ Provides `--dry-run` mode for preview
+- ✅ Uses interactive prompts (not silent installation)
+- ✅ Includes comprehensive logging
+- ✅ Only installs from official Homebrew repositories
+
+**Best practice:**
+1. Download the script first
+2. Review the code
+3. Run with `--dry-run` to preview
+4. Execute when comfortable
+
+---
+
+## 🤝 Contributing
+
+**Maintenance Level:** Light / Best-Effort Basis
+
+This project is maintained on a **best-effort basis** due to time constraints. Here's what to expect:
+
+### What You Can Do
+
+✅ **Issues** - Feel free to open issues for:
+- Bug reports (please include system info)
+- Feature requests
+- Questions about migration
+- Sharing your migration story
+
+✅ **Pull Requests** - PRs are welcome but:
+- May take 2-4 weeks (or longer) for review
+- No guarantee of merge even for good PRs
+- Please be patient - this is a side project
+
+✅ **Forks** - Highly encouraged!
+- Need a fix urgently? Fork it!
+- Want to add features? Fork it!
+- MIT license allows you to maintain your own version
+- Share your fork in an issue so others can benefit
+
+### Stale PR Policy
+
+To keep the repository manageable:
+- PRs inactive for 60 days will be labeled "stale"
+- Stale PRs will be closed after 7 more days
+- You can always reopen by adding a comment
+- This keeps the PR list clean while respecting your work
+
+### Ways to Contribute
+
+- Report bugs via [GitHub Issues](https://github.com/joaquimscosta/homebrew-arm64-migration/issues)
+- Suggest new packages or version managers
+- Improve documentation
+- Share your migration story
+- **Create and maintain forks** for specific use cases
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
+
+---
+
+## 📝 License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+**Disclaimer:** This software is provided "as is", without warranty of any kind. Use at your own risk. Always back up your system before making significant changes. The authors are not responsible for any data loss or system issues.
+
+---
+
+## 🙏 Acknowledgments
+
+- **Homebrew** - The missing package manager for macOS
+- **Astral** - Creators of uv and Ruff (modern Python tooling)
+- **SDKMAN** - The JVM version manager
+- **Community** - All the developers of modern CLI tools (ripgrep, eza, fd, bat, etc.)
+- **Research** - Best practices gathered from 2025 industry trends
+
+---
+
+## 📊 Project Status
+
+**Status:** Active maintenance (light updates)
+**Latest Version:** 1.0.0
+**Last Updated:** January 2025
+**Tested On:** macOS Sequoia 15.6.1, Apple M3 Max
+
+---
+
+## 🐛 Reporting Issues
+
+Found a bug? Have a suggestion?
+
+1. Check existing [GitHub Issues](https://github.com/joaquimscosta/homebrew-arm64-migration/issues)
+2. Create a new issue with:
+   - macOS version (`sw_vers`)
+   - Chip model (`sysctl -n machdep.cpu.brand_string`)
+   - Error message and logs
+   - Steps to reproduce
+
+---
+
+## ⭐ Star This Project
+
+If this tool helped you migrate to ARM64 Homebrew or set up your new Mac, consider giving it a star! It helps others discover the project.
+
+---
+
+**Made with ❤️ for the Apple Silicon community**
