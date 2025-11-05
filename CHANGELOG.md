@@ -7,6 +7,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Tools Catalog** (`TOOLS_CATALOG.md`): Comprehensive documentation of all 72 tools
+  - Detailed descriptions for each tool (Essential, Version Managers, Languages, Cloud/DevOps, Build Tools, Modern CLI, Database, Media, GUI)
+  - Official website and GitHub repository links for every tool
+  - Quick reference table with tool categories and auto-install status
+  - "Why use this?" callouts for key tools
+  - Phase information showing when each tool is installed
+- **Shell Alias Report**: Automatic generation of recommended shell aliases
+  - Context-aware alias recommendations based on installed tools
+  - Comprehensive coverage of modern CLI replacements (bat, eza, ripgrep, fd, zoxide)
+  - Kubernetes shortcuts (kubectl, kubectx/kubens)
+  - Git enhancements (delta configuration)
+  - Version manager initialization commands
+  - Safety warnings for aliases that override default commands
+  - Copy-paste ready format for `.zshrc`/`.bashrc`
+
+### Fixed
+- **Critical Package Issues**:
+  - Removed non-existent `kubens` package installation (bundled with kubectx)
+  - Fixed `google-cloud-sdk` installation method (now correctly installs as cask)
+  - Updated script to reflect that kubectx includes kubens binary
+- **Documentation Accuracy**:
+  - Fixed tool count (71 → 72 tools)
+  - Corrected category assignments in TOOLS_CATALOG.md
+  - Moved ansible and ansible-lint to correct Cloud & DevOps section
+  - Updated category counts to match actual tool distribution
+- **Shellcheck Compliance**: Resolved all shellcheck errors and warnings
+  - Fixed SC2199: Array expansion syntax in conditionals
+  - Removed unused variables (MANIFEST_FILE, description parameter)
+  - Cleaned up incomplete START_AT_PHASE feature
+
+### Improved
+- **Installation Script** (`install-homebrew-arm64.sh`):
+  - Enhanced broken file detection and handling
+  - Improved output formatting throughout all phases
+  - Better error messages and user guidance
+  - Added comments explaining kubectx/kubens relationship
+- **Post-Install Experience**:
+  - Comprehensive alias report displayed after installation
+  - Organized by category (CLI replacements, Kubernetes, Git, etc.)
+  - Clear instructions for applying aliases
+  - Version manager setup guidance included in report
+
+### Documentation
+- **Uninstall Guide** (`UNINSTALL.md`): Complete three-step uninstall workflow
+  - Official Homebrew uninstaller instructions
+  - Cleanup scripts usage and safety checks
+  - ARM64 installation preparation steps
+  - Real-world migration examples (~820MB remnants)
+  - Troubleshooting section for common uninstall issues
+- **Enhanced Safety**:
+  - Pre-checks in cleanup scripts verify official uninstaller ran first
+  - Warnings prevent premature cleanup leaving systems inconsistent
+  - Clear guidance in README and INSTALLATION-GUIDE about required workflow
+
 ### Planned
 - Community feedback integration
 - Additional version manager support (asdf, mise)

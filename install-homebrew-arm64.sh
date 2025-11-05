@@ -56,6 +56,9 @@ INSTALL_LOG="${SCRIPT_DIR}/install-log-$(date +%Y%m%d-%H%M%S).txt"
 INSTALLED_PACKAGES=()
 BROKEN_FILES_DETECTED=false
 
+# Alias tracking for post-install report
+declare -A INSTALLED_TOOLS_WITH_ALIASES
+
 # Homebrew paths
 readonly HOMEBREW_ARM64_PATH="/opt/homebrew"
 readonly HOMEBREW_INTEL_PATH="/usr/local"
@@ -592,7 +595,6 @@ install_cloud_devops() {
         local cloud_tools=(
             "awscli"
             "azure-cli"
-            "google-cloud-sdk"
             "helm"
             "k9s"
             "ansible"
@@ -602,6 +604,21 @@ install_cloud_devops() {
         for tool in "${cloud_tools[@]}"; do
             safe_brew_install "$tool"
         done
+
+        # Google Cloud SDK must be installed as a cask
+        if [ "$DRY_RUN" = true ]; then
+            echo -e "  ${YELLOW}[DRY RUN]${NC} Would install cask: google-cloud-sdk"
+        else
+            echo -e "  ${BLUE}→${NC} Installing ${BOLD}google-cloud-sdk${NC} (cask)..."
+            if "${HOMEBREW_ARM64_BIN}" install --cask google-cloud-sdk 2>&1 | tee -a "$INSTALL_LOG"; then
+                INSTALLED_PACKAGES+=("google-cloud-sdk (cask)")
+                echo -e "  ${GREEN}✓${NC} Installed: google-cloud-sdk"
+                log_message "SUCCESS: Installed google-cloud-sdk (cask)"
+            else
+                echo -e "  ${RED}✗${NC} Failed to install: google-cloud-sdk"
+                log_message "FAILED: google-cloud-sdk (cask)"
+            fi
+        fi
 
         echo ""
         print_info "Post-install setup:"
@@ -618,11 +635,10 @@ install_cloud_devops() {
         fi
         echo ""
 
-        print_recommendation "Consider adding: kubectl, kubectx, kubens, stern, terraform-docs"
+        print_recommendation "Consider adding: kubectl, kubectx (includes kubens), stern, terraform-docs"
         if confirm_action "Install additional Kubernetes tools?" "y"; then
             safe_brew_install "kubectl"
-            safe_brew_install "kubectx"
-            safe_brew_install "kubens"
+            safe_brew_install "kubectx"  # Note: kubectx includes kubens binary
             safe_brew_install "stern"
         fi
 
@@ -813,6 +829,240 @@ install_casks() {
 }
 
 ################################################################################
+# Alias Report Generation
+################################################################################
+
+generate_alias_report() {
+    local has_aliases=false
+
+    # Check if any tools with common aliases were installed
+    for pkg in "${INSTALLED_PACKAGES[@]}"; do
+        case "$pkg" in
+            bat|eza|ripgrep|fd|zoxide|kubectl|kubectx|git-delta|httpie|procs|chezmoi|tmux|fzf)
+                has_aliases=true
+                break
+                ;;
+        esac
+    done
+
+    if [ "$has_aliases" = false ]; then
+        return 0
+    fi
+
+    echo ""
+    print_header "Recommended Shell Aliases"
+
+    echo -e "${CYAN}Based on the tools you installed, here are recommended shell aliases:${NC}"
+    echo -e "${YELLOW}Add these to your ~/.zshrc or ~/.bashrc file${NC}"
+    echo ""
+
+    # Modern CLI Replacements
+    local has_modern_cli=false
+    for pkg in "${INSTALLED_PACKAGES[@]}"; do
+        case "$pkg" in
+            bat|eza|ripgrep|fd) has_modern_cli=true; break ;;
+        esac
+    done
+
+    if [ "$has_modern_cli" = true ]; then
+        echo -e "${BOLD}${MAGENTA}## Modern CLI Replacements${NC} ${YELLOW}(⚠️  Overrides default commands)${NC}"
+        echo ""
+
+        if [[ " ${INSTALLED_PACKAGES[*]} " =~ "bat" ]]; then
+            echo -e "  ${GREEN}# Better 'cat' with syntax highlighting${NC}"
+            echo "  alias cat='bat'"
+            echo "  alias -g -- --help='--help 2>&1 | bat --language=help --style=plain'"
+            echo ""
+        fi
+
+        if [[ " ${INSTALLED_PACKAGES[*]} " =~ "eza" ]]; then
+            echo -e "  ${GREEN}# Modern 'ls' replacement${NC}"
+            echo "  alias ls='eza --icons --group-directories-first'"
+            echo "  alias ll='eza -l --icons --group-directories-first'"
+            echo "  alias la='eza -la --icons --group-directories-first'"
+            echo "  alias lt='eza --tree --level=2 --icons'"
+            echo ""
+        fi
+
+        if [[ " ${INSTALLED_PACKAGES[*]} " =~ "ripgrep" ]]; then
+            echo -e "  ${GREEN}# Better 'grep' - faster with .gitignore support${NC}"
+            echo "  alias grep='rg'"
+            echo "  alias rg='rg -C 3'  # 3 lines of context"
+            echo ""
+        fi
+
+        if [[ " ${INSTALLED_PACKAGES[*]} " =~ "fd" ]]; then
+            echo -e "  ${GREEN}# Simpler, faster 'find'${NC}"
+            echo "  alias find='fd'"
+            echo ""
+        fi
+    fi
+
+    # Navigation & Productivity
+    if [[ " ${INSTALLED_PACKAGES[*]} " =~ "zoxide" ]]; then
+        echo -e "${BOLD}${MAGENTA}## Smart Navigation${NC}"
+        echo ""
+        echo -e "  ${GREEN}# zoxide - smart 'cd' that learns your habits${NC}"
+        echo "  eval \"\$(zoxide init --cmd cd zsh)\"  # Makes 'cd' use zoxide"
+        echo "  # Or use 'z' command: eval \"\$(zoxide init zsh)\""
+        echo ""
+    fi
+
+    if [[ " ${INSTALLED_PACKAGES[*]} " =~ "fzf" ]]; then
+        echo -e "${BOLD}${MAGENTA}## Fuzzy Finding${NC}"
+        echo ""
+        echo -e "  ${GREEN}# fzf - fuzzy finder for files, history, processes${NC}"
+        echo "  eval \"\$(fzf --zsh)\"  # Enable fzf keybindings and completion"
+        echo ""
+    fi
+
+    # Kubernetes Tools
+    local has_k8s=false
+    for pkg in "${INSTALLED_PACKAGES[@]}"; do
+        case "$pkg" in
+            kubectl|kubectx) has_k8s=true; break ;;
+        esac
+    done
+
+    if [ "$has_k8s" = true ]; then
+        echo -e "${BOLD}${MAGENTA}## Kubernetes Shortcuts${NC}"
+        echo ""
+
+        if [[ " ${INSTALLED_PACKAGES[*]} " =~ "kubectl" ]]; then
+            echo -e "  ${GREEN}# kubectl shortcuts${NC}"
+            echo "  alias k='kubectl'"
+            echo "  alias kgp='kubectl get pods'"
+            echo "  alias kgs='kubectl get svc'"
+            echo "  alias kgd='kubectl get deployment'"
+            echo "  alias kgn='kubectl get nodes'"
+            echo "  alias kd='kubectl describe'"
+            echo "  alias kdel='kubectl delete'"
+            echo "  alias kl='kubectl logs'"
+            echo "  alias klf='kubectl logs -f'"
+            echo "  alias kex='kubectl exec -it'"
+            echo "  alias kaf='kubectl apply -f'"
+            echo "  alias kpf='kubectl port-forward'"
+            echo ""
+            echo -e "  ${GREEN}# kubectl completion${NC}"
+            echo "  source <(kubectl completion zsh)"
+            echo ""
+        fi
+
+        if [[ " ${INSTALLED_PACKAGES[*]} " =~ "kubectx" ]]; then
+            echo -e "  ${GREEN}# kubectx/kubens shortcuts (already short!)${NC}"
+            echo "  alias kctx='kubectx'"
+            echo "  alias kns='kubens'"
+            echo "  # Switch to previous context: kubectx -"
+            echo "  # Switch to previous namespace: kubens -"
+            echo ""
+        fi
+    fi
+
+    # Git & Version Control
+    if [[ " ${INSTALLED_PACKAGES[*]} " =~ "git-delta" ]]; then
+        echo -e "${BOLD}${MAGENTA}## Git Enhancements${NC}"
+        echo ""
+        echo -e "  ${GREEN}# Configure git to use delta for diffs${NC}"
+        echo "  git config --global core.pager delta"
+        echo "  git config --global interactive.diffFilter 'delta --color-only'"
+        echo "  git config --global delta.navigate true"
+        echo "  git config --global merge.conflictstyle diff3"
+        echo ""
+    fi
+
+    # Development Tools
+    if [[ " ${INSTALLED_PACKAGES[*]} " =~ "httpie" ]]; then
+        echo -e "${BOLD}${MAGENTA}## HTTP/API Testing${NC}"
+        echo ""
+        echo -e "  ${GREEN}# HTTPie shortcuts${NC}"
+        echo "  alias http='http --print=HhBb'  # Show headers + body"
+        echo "  alias https='http --default-scheme=https'"
+        echo ""
+    fi
+
+    if [[ " ${INSTALLED_PACKAGES[*]} " =~ "procs" ]]; then
+        echo -e "${BOLD}${MAGENTA}## Process Management${NC}"
+        echo ""
+        echo -e "  ${GREEN}# Modern 'ps' replacement${NC}"
+        echo "  alias ps='procs'"
+        echo ""
+    fi
+
+    # Terminal Multiplexer
+    if [[ " ${INSTALLED_PACKAGES[*]} " =~ "tmux" ]]; then
+        echo -e "${BOLD}${MAGENTA}## Terminal Multiplexer${NC}"
+        echo ""
+        echo -e "  ${GREEN}# tmux shortcuts${NC}"
+        echo "  alias t='tmux'"
+        echo "  alias ta='tmux attach'"
+        echo "  alias tl='tmux list-sessions'"
+        echo "  alias tn='tmux new-session -s'"
+        echo ""
+    fi
+
+    # Dotfiles Management
+    if [[ " ${INSTALLED_PACKAGES[*]} " =~ "chezmoi" ]]; then
+        echo -e "${BOLD}${MAGENTA}## Dotfiles Management${NC}"
+        echo ""
+        echo -e "  ${GREEN}# chezmoi shortcuts${NC}"
+        echo "  alias cm='chezmoi'"
+        echo "  alias cma='chezmoi add'"
+        echo "  alias cme='chezmoi edit'"
+        echo "  alias cmcd='chezmoi cd'"
+        echo "  alias cmup='chezmoi update'"
+        echo ""
+    fi
+
+    # Version Managers
+    local has_version_managers=false
+    for pkg in "${INSTALLED_PACKAGES[@]}"; do
+        case "$pkg" in
+            pyenv|rbenv|fnm) has_version_managers=true; break ;;
+        esac
+    done
+
+    if [ "$has_version_managers" = true ]; then
+        echo -e "${BOLD}${MAGENTA}## Version Managers (Required Setup)${NC}"
+        echo ""
+
+        if [[ " ${INSTALLED_PACKAGES[*]} " =~ "pyenv" ]]; then
+            echo -e "  ${GREEN}# pyenv - Python version management${NC}"
+            echo "  export PYENV_ROOT=\"\$HOME/.pyenv\""
+            echo "  [[ -d \$PYENV_ROOT/bin ]] && export PATH=\"\$PYENV_ROOT/bin:\$PATH\""
+            echo "  eval \"\$(pyenv init -)\""
+            echo ""
+        fi
+
+        if [[ " ${INSTALLED_PACKAGES[*]} " =~ "rbenv" ]]; then
+            echo -e "  ${GREEN}# rbenv - Ruby version management${NC}"
+            echo "  eval \"\$(rbenv init - zsh)\""
+            echo ""
+        fi
+
+        if [[ " ${INSTALLED_PACKAGES[*]} " =~ "fnm" ]]; then
+            echo -e "  ${GREEN}# fnm - Fast Node Manager${NC}"
+            echo "  eval \"\$(fnm env --use-on-cd)\""
+            echo ""
+        fi
+    fi
+
+    # Safety Warning
+    echo -e "${YELLOW}${BOLD}⚠️  Important Notes:${NC}"
+    echo -e "  ${YELLOW}•${NC} Aliases that override default commands (cat, ls, grep, find) may affect scripts"
+    echo -e "  ${YELLOW}•${NC} Test aliases before committing to your shell config"
+    echo -e "  ${YELLOW}•${NC} You can always use the original command with: \\command (e.g., \\cat, \\ls)"
+    echo -e "  ${YELLOW}•${NC} Version manager init commands are REQUIRED for those tools to work"
+    echo ""
+
+    # Quick copy instructions
+    echo -e "${CYAN}${BOLD}To apply these aliases:${NC}"
+    echo "  1. Copy the aliases you want above"
+    echo "  2. Add them to ~/.zshrc (or ~/.bashrc for bash)"
+    echo "  3. Run: source ~/.zshrc"
+    echo ""
+}
+
+################################################################################
 # Post-Install Report
 ################################################################################
 
@@ -884,17 +1134,8 @@ generate_post_install_report() {
         echo ""
     fi
 
-    echo -e "${YELLOW}3. Set up shell aliases (optional):${NC}"
-    if [ ${#INSTALLED_PACKAGES[@]} -gt 0 ] && [[ " ${INSTALLED_PACKAGES[*]} " =~ "bat" ]]; then
-        echo "   alias cat='bat'"
-    fi
-    if [ ${#INSTALLED_PACKAGES[@]} -gt 0 ] && [[ " ${INSTALLED_PACKAGES[*]} " =~ "eza" ]]; then
-        echo "   alias ls='eza'"
-        echo "   alias ll='eza -l'"
-    fi
-    if [ ${#INSTALLED_PACKAGES[@]} -gt 0 ] && [[ " ${INSTALLED_PACKAGES[*]} " =~ "ripgrep" ]]; then
-        echo "   alias grep='rg'"
-    fi
+    echo -e "${YELLOW}3. See the 'Recommended Shell Aliases' section below${NC}"
+    echo "   for comprehensive alias recommendations based on your installed tools"
     echo ""
 
     # Only show cleanup instruction if broken files were detected
@@ -973,6 +1214,7 @@ main() {
 
     # Final report
     generate_post_install_report
+    generate_alias_report
 
     print_success "All done! Enjoy your new development environment! 🎉"
 }
