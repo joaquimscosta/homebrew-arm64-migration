@@ -52,9 +52,12 @@ readonly NC='\033[0m' # No Color
 DRY_RUN=false
 AUTO_YES=false
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-INSTALL_LOG="${SCRIPT_DIR}/install-log-$(date +%Y%m%d-%H%M%S).txt"
+INSTALL_LOG="${SCRIPT_DIR}/logs/install-$(date +%Y%m%d-%H%M%S).log"
 INSTALLED_PACKAGES=()
 BROKEN_FILES_DETECTED=false
+
+# Create logs directory if it doesn't exist
+mkdir -p "${SCRIPT_DIR}/logs"
 
 # Alias tracking for post-install report
 declare -A INSTALLED_TOOLS_WITH_ALIASES
