@@ -21,7 +21,6 @@
 #   ./install-homebrew-arm64.sh              # Interactive mode
 #   ./install-homebrew-arm64.sh --dry-run    # Preview without installing
 #   ./install-homebrew-arm64.sh --auto-yes   # Auto-approve all prompts
-#   ./install-homebrew-arm64.sh --start-at=5 # Start at specific phase
 #   ./install-homebrew-arm64.sh --help       # Show help
 #
 # SECURITY WARNING:
@@ -52,9 +51,7 @@ readonly NC='\033[0m' # No Color
 # Script configuration
 DRY_RUN=false
 AUTO_YES=false
-START_AT_PHASE=""
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-MANIFEST_FILE="${SCRIPT_DIR}/package-categories.json"
 INSTALL_LOG="${SCRIPT_DIR}/install-log-$(date +%Y%m%d-%H%M%S).txt"
 INSTALLED_PACKAGES=()
 
@@ -145,7 +142,6 @@ show_explanation() {
 
 safe_brew_install() {
     local package="$1"
-    local description="${2:-}"
 
     if [ "$DRY_RUN" = true ]; then
         echo -e "  ${YELLOW}[DRY RUN]${NC} Would install: $package"
@@ -863,14 +859,14 @@ generate_post_install_report() {
     echo ""
 
     echo -e "${YELLOW}2. Configure version managers:${NC}"
-    if [[ " ${INSTALLED_PACKAGES[@]} " =~ "pyenv" ]]; then
+    if [[ " ${INSTALLED_PACKAGES[*]} " =~ "pyenv" ]]; then
         echo "   ${BOLD}pyenv:${NC}"
         echo "     echo 'eval \"\$(pyenv init -)\"' >> ~/.zshrc"
         echo "     pyenv install 3.12.1"
         echo "     pyenv global 3.12.1"
         echo ""
     fi
-    if [[ " ${INSTALLED_PACKAGES[@]} " =~ "rbenv" ]]; then
+    if [[ " ${INSTALLED_PACKAGES[*]} " =~ "rbenv" ]]; then
         echo "   ${BOLD}rbenv:${NC}"
         echo "     echo 'eval \"\$(rbenv init - zsh)\"' >> ~/.zshrc"
         echo "     rbenv install 3.2.2"
@@ -879,14 +875,14 @@ generate_post_install_report() {
     fi
 
     echo -e "${YELLOW}3. Set up shell aliases (optional):${NC}"
-    if [[ " ${INSTALLED_PACKAGES[@]} " =~ "bat" ]]; then
+    if [[ " ${INSTALLED_PACKAGES[*]} " =~ "bat" ]]; then
         echo "   alias cat='bat'"
     fi
-    if [[ " ${INSTALLED_PACKAGES[@]} " =~ "eza" ]]; then
+    if [[ " ${INSTALLED_PACKAGES[*]} " =~ "eza" ]]; then
         echo "   alias ls='eza'"
         echo "   alias ll='eza -l'"
     fi
-    if [[ " ${INSTALLED_PACKAGES[@]} " =~ "ripgrep" ]]; then
+    if [[ " ${INSTALLED_PACKAGES[*]} " =~ "ripgrep" ]]; then
         echo "   alias grep='rg'"
     fi
     echo ""
@@ -915,16 +911,12 @@ main() {
                 AUTO_YES=true
                 print_warning "AUTO-YES MODE - All prompts will be auto-approved"
                 ;;
-            --start-at=*)
-                START_AT_PHASE="${arg#*=}"
-                ;;
             --help)
                 echo "Usage: $0 [OPTIONS]"
                 echo ""
                 echo "Options:"
                 echo "  --dry-run         Preview installation without making changes"
                 echo "  --auto-yes        Auto-approve all prompts"
-                echo "  --start-at=PHASE  Start at specific phase (e.g., --start-at=3)"
                 echo "  --help            Show this help"
                 exit 0
                 ;;
