@@ -53,10 +53,19 @@ This installation system provides an intelligent, interactive way to set up Home
 
 ### Before Running
 
-1. **Clean up old Homebrew** (if migrating from Intel):
+1. **Uninstall existing Homebrew** (if migrating from Intel):
+
+   ⚠️ **IMPORTANT:** You must run the official Homebrew uninstaller **first**, then use cleanup scripts to remove remnants.
+
    ```bash
-   ./cleanup-broken-files.sh
+   # Step 1: Run official uninstaller
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
+
+   # Step 2: Clean up remnants
+   ./cleanup-homebrew-remnants.sh
    ```
+
+   **For complete uninstall workflow, see [UNINSTALL-GUIDE.md](UNINSTALL-GUIDE.md)**
 
 2. **Check architecture**:
    ```bash
@@ -785,15 +794,17 @@ uname -m
 
 **Solution:**
 ```bash
-# Uninstall Intel Homebrew first
+# Uninstall Intel Homebrew first (required)
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
 
-# Clean up remnants
-./cleanup-broken-files.sh
+# Clean up remnants (after official uninstaller)
+./cleanup-homebrew-remnants.sh
 
 # Then re-run installer
 ./install-homebrew-arm64.sh
 ```
+
+**For complete uninstall workflow, see [UNINSTALL-GUIDE.md](UNINSTALL-GUIDE.md)**
 
 ---
 

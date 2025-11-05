@@ -107,6 +107,41 @@ print_error() {
     echo -e "${RED}✗${NC}  $1"
 }
 
+# Check if official Homebrew uninstaller was run first
+check_homebrew_uninstalled() {
+    if [ -d "/usr/local/Homebrew" ] && [ -d "/usr/local/Homebrew/.git" ]; then
+        print_header "⚠️  WARNING: Official Homebrew Uninstaller Not Run"
+        echo ""
+        print_warning "Intel Homebrew appears to still be installed!"
+        echo ""
+        echo "This script removes REMNANTS after the official Homebrew uninstaller runs."
+        echo "You must run the official uninstaller FIRST:"
+        echo ""
+        echo "  /bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)\""
+        echo ""
+        echo "Or for custom prefix:"
+        echo "  curl -fsSLO https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh"
+        echo "  /bin/bash uninstall.sh --path /usr/local"
+        echo ""
+        echo "For complete uninstall workflow, see:"
+        echo "  - docs/UNINSTALL-GUIDE.md"
+        echo "  - https://github.com/joaquimscosta/homebrew-arm64-migration/blob/main/docs/UNINSTALL-GUIDE.md"
+        echo ""
+
+        if [ "$AUTO_APPROVE" = false ]; then
+            read -p "Continue anyway? (not recommended) (y/N) " -n 1 -r
+            echo ""
+            if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+                print_error "Aborted. Please run the official Homebrew uninstaller first."
+                exit 1
+            fi
+        fi
+
+        print_warning "Proceeding without official uninstaller (not recommended)..."
+        echo ""
+    fi
+}
+
 confirm_action() {
     local prompt="$1"
     local default="${2:-n}"
@@ -167,6 +202,9 @@ safe_remove() {
 ################################################################################
 
 print_header "Homebrew Broken Files Cleanup"
+
+# Check if official Homebrew uninstaller was run
+check_homebrew_uninstalled
 
 echo "This script will remove orphaned files left behind after Homebrew uninstallation."
 echo "These files are broken and will not function because they reference non-existent"

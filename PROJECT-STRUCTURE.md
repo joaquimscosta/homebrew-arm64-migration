@@ -19,7 +19,8 @@ homebrew-arm64-migration/
 ├── docs/
 │   ├── INSTALLATION-GUIDE.md          # Comprehensive installation guide (1000+ lines)
 │   ├── MIGRATION-CASE-STUDY.md        # Real-world migration case study
-│   └── TROUBLESHOOTING.md             # Common issues and solutions
+│   ├── TROUBLESHOOTING.md             # Common issues and solutions
+│   └── UNINSTALL-GUIDE.md             # Complete uninstall workflow (Intel → ARM64)
 │
 ├── examples/
 │   └── custom-packages.json           # Example custom package configuration
@@ -217,6 +218,25 @@ homebrew-arm64-migration/
 - `command not found` after migration
 - Version manager setup
 
+### `docs/UNINSTALL-GUIDE.md`
+**Purpose:** Complete workflow for uninstalling Intel Homebrew and migrating to ARM64
+
+**Sections:**
+- Overview of when to use the guide
+- Three-step process (Official Uninstaller → Cleanup → Install ARM64)
+- Official Homebrew uninstaller commands and options
+- What the official uninstaller removes vs. leaves behind (~820MB remnants)
+- Cleanup script options (comprehensive vs. targeted)
+- Post-uninstall verification steps
+- Package restoration from Brewfile backup
+- Troubleshooting uninstall issues
+- Complete workflow checklist
+- Real-world migration example
+
+**Target Audience:** Users migrating from Intel Homebrew or performing clean reinstall
+
+**Key Message:** Official uninstaller must run FIRST, then cleanup scripts handle remnants
+
 ---
 
 ## GitHub Integration
@@ -389,6 +409,7 @@ homebrew-arm64-migration/
 | File | Lines | Purpose |
 |------|-------|---------|
 | `install-homebrew-arm64.sh` | 850 | Main installation script |
+| `docs/UNINSTALL-GUIDE.md` | 700+ | Complete uninstall workflow |
 | `docs/INSTALLATION-GUIDE.md` | 1000+ | Comprehensive guide |
 | `docs/MIGRATION-CASE-STUDY.md` | 600+ | Real-world case study |
 | `docs/TROUBLESHOOTING.md` | 500+ | Issue resolution |
@@ -396,14 +417,15 @@ homebrew-arm64-migration/
 | `CONTRIBUTING.md` | 400+ | Contribution guide |
 | `README.md` | 300+ | Main documentation |
 | `examples/custom-packages.json` | 250+ | Custom config example |
-| `cleanup-homebrew-remnants.sh` | 135 | Cleanup script |
+| `cleanup-homebrew-remnants.sh` | 170 | Cleanup script (with pre-check) |
+| `cleanup-broken-files.sh` | 300+ | Targeted cleanup (with pre-check) |
 | `CHANGELOG.md` | 150+ | Version history |
 | `.github/workflows/shellcheck.yml` | 40 | CI/CD workflow |
 | `.github/ISSUE_TEMPLATE/bug_report.md` | 100+ | Bug report template |
 | `.gitignore` | 100+ | Git exclusions |
 | `LICENSE` | 50+ | MIT License + disclaimer |
 
-**Total:** ~5,000+ lines of code and documentation
+**Total:** ~6,000+ lines of code and documentation
 
 ---
 
@@ -460,10 +482,10 @@ homebrew-arm64-migration/
 
 ## Repository Statistics
 
-- **Total Files (Public):** ~20 files
-- **Total Lines:** ~5,000+ lines (code + docs)
+- **Total Files (Public):** ~21 files
+- **Total Lines:** ~6,000+ lines (code + docs)
 - **Languages:** Bash, JSON, Markdown, YAML
-- **Documentation Coverage:** Extensive (README, guides, troubleshooting, case study)
+- **Documentation Coverage:** Extensive (README, installation guide, uninstall guide, migration case study, troubleshooting)
 - **Automation:** GitHub Actions (ShellCheck)
 - **Testing:** Manual testing checklist, dry-run mode
 - **License:** MIT (permissive open-source)

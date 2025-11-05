@@ -223,7 +223,7 @@ check_broken_files() {
         ((broken_count++))
     fi
 
-    if [ broken_count -gt 0 ]; then
+    if [ $broken_count -gt 0 ]; then
         print_warning "Detected broken files from previous Homebrew installation"
         print_info "Run ./cleanup-broken-files.sh to clean up before proceeding"
         if ! confirm_action "Continue anyway?" "n"; then

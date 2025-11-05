@@ -156,13 +156,33 @@ Options:
 
 ---
 
-## 🧹 Cleanup Scripts
+## 🧹 Uninstall & Cleanup
 
-If you previously had Intel Homebrew installed, use these cleanup scripts to remove remnants:
+Migrating from Intel Homebrew to ARM64? Follow this **three-step workflow** for a complete, safe migration:
 
-### Option 1: Comprehensive Cleanup (Recommended)
+> **⚠️ IMPORTANT:** If you have existing Homebrew installed, you **must** run the official Homebrew uninstaller **first**, then use our cleanup scripts to remove remnants. See **[docs/UNINSTALL-GUIDE.md](docs/UNINSTALL-GUIDE.md)** for the complete workflow.
 
-Removes Homebrew directories and installations:
+### Step 1: Official Homebrew Uninstaller (Required First)
+
+Before using our cleanup scripts, remove the main Homebrew installation:
+
+```bash
+# Standard uninstall (for /usr/local)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
+
+# Or for custom prefix
+curl -fsSLO https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh
+/bin/bash uninstall.sh --path /usr/local
+```
+
+**What this removes:** Core Homebrew installation (~3-4GB)
+**What remains:** ~820MB of remnants (Python packages, npm globals, configs)
+
+### Step 2: Cleanup Remnants (Choose One)
+
+After the official uninstaller completes, remove leftover files:
+
+#### Option A: Comprehensive Cleanup (Recommended)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/joaquimscosta/homebrew-arm64-migration/main/cleanup-homebrew-remnants.sh -o cleanup-homebrew-remnants.sh
@@ -170,12 +190,10 @@ chmod +x cleanup-homebrew-remnants.sh
 ./cleanup-homebrew-remnants.sh
 ```
 
-**Removes:** Intel Homebrew directory, Python site-packages, orphaned npm packages, config files
+**Removes:** ~820MB remnants (Python site-packages, npm globals, configs, broken symlinks)
 **Preserves:** Non-Homebrew software (Go, .NET SDK, Docker, Microsoft tools)
 
-### Option 2: Targeted Cleanup
-
-Removes only specific broken symlinks and scripts:
+#### Option B: Targeted Cleanup (Conservative)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/joaquimscosta/homebrew-arm64-migration/main/cleanup-broken-files.sh -o cleanup-broken-files.sh
@@ -184,15 +202,20 @@ chmod +x cleanup-broken-files.sh
 ./cleanup-broken-files.sh
 ```
 
-**Removes:** Broken Python scripts, broken npm CLI symlinks, broken man pages
+**Removes:** Only broken symlinks and scripts
 **Preserves:** All directories and legitimate software
 
-**Recommendation:** Run Option 1 for complete cleanup, or Option 2 for a safer, more conservative approach.
+### Step 3: Install ARM64 Homebrew
+
+After cleanup, install native ARM64 Homebrew using our installation script (see **Quick Start** above).
+
+**Complete Guide:** See **[docs/UNINSTALL-GUIDE.md](docs/UNINSTALL-GUIDE.md)** for detailed instructions, verification steps, and troubleshooting.
 
 ---
 
 ## 📚 Documentation
 
+- **[Uninstall Guide](docs/UNINSTALL-GUIDE.md)** - Complete workflow for Intel → ARM64 migration
 - **[Installation Guide](docs/INSTALLATION-GUIDE.md)** - Comprehensive guide with detailed explanations
 - **[Migration Case Study](docs/MIGRATION-CASE-STUDY.md)** - Real-world migration from Intel to ARM64
 - **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions

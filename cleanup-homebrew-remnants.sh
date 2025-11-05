@@ -42,6 +42,34 @@ echo "==================================="
 echo "Homebrew Remnants Cleanup Script"
 echo "==================================="
 echo ""
+
+# Check if official Homebrew uninstaller was run first
+if [ -d "/usr/local/Homebrew" ] && [ -d "/usr/local/Homebrew/.git" ]; then
+    echo "⚠️  WARNING: Intel Homebrew appears to still be installed!"
+    echo ""
+    echo "This script removes REMNANTS after the official Homebrew uninstaller runs."
+    echo "You must run the official uninstaller FIRST:"
+    echo ""
+    echo "  /bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)\""
+    echo ""
+    echo "Or for custom prefix:"
+    echo "  curl -fsSLO https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh"
+    echo "  /bin/bash uninstall.sh --path /usr/local"
+    echo ""
+    echo "For complete uninstall workflow, see: docs/UNINSTALL-GUIDE.md"
+    echo "Or online: https://github.com/joaquimscosta/homebrew-arm64-migration/blob/main/docs/UNINSTALL-GUIDE.md"
+    echo ""
+    read -p "Continue anyway? (not recommended) (y/N) " -n 1 -r
+    echo ""
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "Aborted. Please run the official Homebrew uninstaller first."
+        exit 1
+    fi
+    echo ""
+    echo "⚠️  Proceeding without official uninstaller (not recommended)..."
+    echo ""
+fi
+
 echo "This will remove approximately 820MB of Homebrew files:"
 echo "  - Main Homebrew directory (636MB)"
 echo "  - Python site-packages (135MB)"
