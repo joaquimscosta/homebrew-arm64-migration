@@ -59,9 +59,6 @@ BROKEN_FILES_DETECTED=false
 # Create logs directory if it doesn't exist
 mkdir -p "${SCRIPT_DIR}/logs"
 
-# Alias tracking for post-install report
-declare -A INSTALLED_TOOLS_WITH_ALIASES
-
 # Homebrew paths
 readonly HOMEBREW_ARM64_PATH="/opt/homebrew"
 readonly HOMEBREW_INTEL_PATH="/usr/local"
