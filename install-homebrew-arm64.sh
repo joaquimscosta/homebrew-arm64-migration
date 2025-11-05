@@ -836,6 +836,11 @@ generate_alias_report() {
     local has_aliases=false
 
     # Check if any tools with common aliases were installed
+    # Skip if no packages installed (e.g., dry-run mode)
+    if [ ${#INSTALLED_PACKAGES[@]} -eq 0 ]; then
+        return 0
+    fi
+
     for pkg in "${INSTALLED_PACKAGES[@]}"; do
         case "$pkg" in
             bat|eza|ripgrep|fd|zoxide|kubectl|kubectx|git-delta|httpie|procs|chezmoi|tmux|fzf)
