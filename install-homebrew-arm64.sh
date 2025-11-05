@@ -54,6 +54,7 @@ AUTO_YES=false
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALL_LOG="${SCRIPT_DIR}/install-log-$(date +%Y%m%d-%H%M%S).txt"
 INSTALLED_PACKAGES=()
+BROKEN_FILES_DETECTED=false
 
 # Homebrew paths
 readonly HOMEBREW_ARM64_PATH="/opt/homebrew"
@@ -220,6 +221,7 @@ check_broken_files() {
     fi
 
     if [ $broken_count -gt 0 ]; then
+        BROKEN_FILES_DETECTED=true
         print_warning "Detected broken files from previous Homebrew installation"
         print_info "Run ./cleanup-broken-files.sh to clean up before proceeding"
         if ! confirm_action "Continue anyway?" "n"; then
@@ -363,7 +365,7 @@ ${BOLD}Recommendation:${NC} Install uv for modern Python development (USER PREFE
         echo "  5. Install CLI tools: uv tool install ruff"
         echo "  6. Run scripts: uv run script.py"
         echo ""
-        echo "  ${GREEN}Tip:${NC} uv is a drop-in pip replacement - use 'uv pip install' anywhere"
+        echo -e "  ${GREEN}Tip:${NC} uv is a drop-in pip replacement - use 'uv pip install' anywhere"
 
         print_success "uv installed successfully"
     else
@@ -534,7 +536,7 @@ Use it for all Java/JVM tools (USER PREFERENCE)"
 
     print_success "SDKMAN detected - using for Java/JVM management"
     echo ""
-    echo "  ${CYAN}Common SDKMAN commands:${NC}"
+    echo -e "  ${CYAN}Common SDKMAN commands:${NC}"
     echo "    sdk list java           # List available Java versions"
     echo "    sdk install java 21.0.1 # Install specific version"
     echo "    sdk use java 21.0.1     # Use for current shell"
@@ -602,16 +604,16 @@ install_cloud_devops() {
         done
 
         echo ""
-        print_info "${CYAN}Post-install setup:${NC}"
-        echo "  ${BOLD}AWS CLI:${NC}     aws configure"
-        echo "  ${BOLD}Azure CLI:${NC}   az login"
-        echo "  ${BOLD}Google Cloud:${NC} gcloud init && gcloud auth login"
+        print_info "Post-install setup:"
+        echo -e "  ${BOLD}AWS CLI:${NC}     aws configure"
+        echo -e "  ${BOLD}Azure CLI:${NC}   az login"
+        echo -e "  ${BOLD}Google Cloud:${NC} gcloud init && gcloud auth login"
         echo ""
 
         # Secrets management (optional)
         if confirm_action "Install Doppler CLI for centralized secrets management?" "n"; then
             safe_brew_install "doppler"
-            print_info "${CYAN}Doppler setup:${NC} doppler login && doppler setup"
+            print_info "Doppler setup: doppler login && doppler setup"
             print_recommendation "Alternative: 1Password CLI (op) or Bitwarden CLI (bw) for password management"
         fi
         echo ""
@@ -780,22 +782,26 @@ install_casks() {
     echo ""
 
     if confirm_action "Install GUI applications?" "y"; then
-        declare -A casks=(
-            ["alfred"]="Spotlight replacement & productivity tool"
-            ["iterm2"]="Advanced terminal emulator"
-            ["firefox"]="Web browser"
-            ["caffeine"]="Keeps Mac awake"
-            ["cheatsheet"]="Shows keyboard shortcuts"
+        # Use parallel arrays for bash 3.2 compatibility
+        local cask_names=("alfred" "iterm2" "firefox" "caffeine" "cheatsheet")
+        local cask_descriptions=(
+            "Spotlight replacement & productivity tool"
+            "Advanced terminal emulator"
+            "Web browser"
+            "Keeps Mac awake"
+            "Shows keyboard shortcuts"
         )
 
-        for cask in "${!casks[@]}"; do
-            echo -e "\n${BOLD}$cask${NC} - ${casks[$cask]}"
-            if confirm_action "Install $cask?" "y"; then
+        for i in "${!cask_names[@]}"; do
+            local cask="${cask_names[$i]}"
+            local description="${cask_descriptions[$i]}"
+            echo -e "\n${BOLD}${cask}${NC} - ${description}"
+            if confirm_action "Install ${cask}?" "y"; then
                 if [ "$DRY_RUN" = true ]; then
-                    echo -e "  ${YELLOW}[DRY RUN]${NC} Would install cask: $cask"
+                    echo -e "  ${YELLOW}[DRY RUN]${NC} Would install cask: ${cask}"
                 else
-                    "${HOMEBREW_ARM64_BIN}" install --cask "$cask" 2>&1 | tee -a "$INSTALL_LOG"
-                    INSTALLED_PACKAGES+=("$cask (cask)")
+                    "${HOMEBREW_ARM64_BIN}" install --cask "${cask}" 2>&1 | tee -a "$INSTALL_LOG"
+                    INSTALLED_PACKAGES+=("${cask} (cask)")
                 fi
             fi
         done
@@ -830,9 +836,13 @@ generate_post_install_report() {
     print_header "Installation Summary"
 
     echo -e "${BOLD}Installed Packages (${#INSTALLED_PACKAGES[@]} total):${NC}"
-    for pkg in "${INSTALLED_PACKAGES[@]}"; do
-        echo "  • $pkg"
-    done
+    if [ ${#INSTALLED_PACKAGES[@]} -gt 0 ]; then
+        for pkg in "${INSTALLED_PACKAGES[@]}"; do
+            echo "  • $pkg"
+        done
+    else
+        echo "  (none - dry run mode)"
+    fi
 
     echo ""
     print_header "Architecture Verification"
@@ -859,15 +869,15 @@ generate_post_install_report() {
     echo ""
 
     echo -e "${YELLOW}2. Configure version managers:${NC}"
-    if [[ " ${INSTALLED_PACKAGES[*]} " =~ "pyenv" ]]; then
-        echo "   ${BOLD}pyenv:${NC}"
+    if [ ${#INSTALLED_PACKAGES[@]} -gt 0 ] && [[ " ${INSTALLED_PACKAGES[*]} " =~ "pyenv" ]]; then
+        echo -e "   ${BOLD}pyenv:${NC}"
         echo "     echo 'eval \"\$(pyenv init -)\"' >> ~/.zshrc"
         echo "     pyenv install 3.12.1"
         echo "     pyenv global 3.12.1"
         echo ""
     fi
-    if [[ " ${INSTALLED_PACKAGES[*]} " =~ "rbenv" ]]; then
-        echo "   ${BOLD}rbenv:${NC}"
+    if [ ${#INSTALLED_PACKAGES[@]} -gt 0 ] && [[ " ${INSTALLED_PACKAGES[*]} " =~ "rbenv" ]]; then
+        echo -e "   ${BOLD}rbenv:${NC}"
         echo "     echo 'eval \"\$(rbenv init - zsh)\"' >> ~/.zshrc"
         echo "     rbenv install 3.2.2"
         echo "     rbenv global 3.2.2"
@@ -875,23 +885,31 @@ generate_post_install_report() {
     fi
 
     echo -e "${YELLOW}3. Set up shell aliases (optional):${NC}"
-    if [[ " ${INSTALLED_PACKAGES[*]} " =~ "bat" ]]; then
+    if [ ${#INSTALLED_PACKAGES[@]} -gt 0 ] && [[ " ${INSTALLED_PACKAGES[*]} " =~ "bat" ]]; then
         echo "   alias cat='bat'"
     fi
-    if [[ " ${INSTALLED_PACKAGES[*]} " =~ "eza" ]]; then
+    if [ ${#INSTALLED_PACKAGES[@]} -gt 0 ] && [[ " ${INSTALLED_PACKAGES[*]} " =~ "eza" ]]; then
         echo "   alias ls='eza'"
         echo "   alias ll='eza -l'"
     fi
-    if [[ " ${INSTALLED_PACKAGES[*]} " =~ "ripgrep" ]]; then
+    if [ ${#INSTALLED_PACKAGES[@]} -gt 0 ] && [[ " ${INSTALLED_PACKAGES[*]} " =~ "ripgrep" ]]; then
         echo "   alias grep='rg'"
     fi
     echo ""
 
-    echo -e "${YELLOW}4. Run cleanup script:${NC}"
-    echo "   ./cleanup-broken-files.sh"
-    echo ""
+    # Only show cleanup instruction if broken files were detected
+    if [ "$BROKEN_FILES_DETECTED" = true ]; then
+        echo -e "${YELLOW}4. Run cleanup script:${NC}"
+        echo "   ./cleanup-broken-files.sh"
+        echo "   ${CYAN}(Removes broken symlinks from previous Homebrew installation)${NC}"
+        echo ""
+    fi
 
-    echo -e "${GREEN}${BOLD}Installation log saved to:${NC} $INSTALL_LOG"
+    if [ "$DRY_RUN" = false ]; then
+        echo -e "${GREEN}${BOLD}Installation log saved to:${NC} $INSTALL_LOG"
+    else
+        echo -e "${CYAN}Note: No log file created in dry-run mode${NC}"
+    fi
     echo ""
 }
 
