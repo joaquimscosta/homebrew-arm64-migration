@@ -21,6 +21,7 @@ Migrating from Intel Homebrew (`/usr/local`) to native ARM64 Homebrew (`/opt/hom
 - **☁️ Multi-Cloud Support** - AWS CLI, Azure CLI, Google Cloud SDK with post-install setup guidance
 - **🛡️ Safe & Reversible** - Dry-run mode, comprehensive logging, health checks
 - **🎨 Modern CLI Tools** - ripgrep, eza, fd, bat, delta, fzf, zoxide, and more
+- **🔧 Smart Aliases** - Safe non-overriding aliases by default; POSIX overrides commented out
 
 ---
 
@@ -152,6 +153,78 @@ Options:
 
 # Resume from Phase 5 (Cloud/DevOps tools)
 ./install-homebrew-arm64.sh --start-at=5
+```
+
+---
+
+## 🔧 Shell Aliases & Modern CLI Tools
+
+The installer generates a `.aliases` file with recommended shell aliases for modern CLI tools.
+
+### 🔒 Safety-First Approach
+
+**NEW in v1.1.0:** POSIX command overrides are now **commented out by default** for safety.
+
+#### ✅ Enabled by Default (Safe)
+
+Non-overriding aliases that don't interfere with standard commands:
+
+```bash
+# Modern CLI tools with safe names
+alias batcat='bat'           # Syntax-highlighted cat
+alias ezals='eza --icons'    # Modern ls with icons
+alias rgg='rg'               # Fast grep (ripgrep)
+alias fdf='fd'               # Simpler find
+alias procps='procs'         # Better ps viewer
+
+# Helpful shortcuts
+alias ll='eza -l --icons'
+alias la='eza -la --icons'
+alias lt='eza --tree --icons'
+```
+
+#### ⚠️ Commented Out by Default (Review Before Enabling)
+
+Command overrides that may break scripts:
+
+```bash
+# 🔴 HIGH RISK - Uncomment only after testing
+# alias cat='bat'       # Breaks scripts using pipelines with -n flag
+# alias grep='rg'       # Different options, recursion behavior
+# alias find='fd'       # Only ~80% of find functionality
+
+# 🟡 MEDIUM RISK - Output format differences
+# alias ls='eza'        # May break scripts parsing ls output
+# alias ps='procs'      # Different column format
+```
+
+### Risk Levels (Based on 2023-2025 Research)
+
+- **🔴 HIGH RISK**: `cat`, `grep`, `find` - Breaks pipelines, incompatible options
+- **🟡 MEDIUM RISK**: `ls`, `ps` - Output format/parsing issues
+- **✅ SAFE**: Non-overriding aliases (`batcat`, `ezals`, `rgg`, etc.)
+
+### Usage
+
+After installation, add to your `~/.zshrc`:
+
+```bash
+# Load custom aliases (must be last to avoid breaking initialization)
+if [ -f "${HOME}/.aliases" ]; then
+    source "${HOME}/.aliases"
+fi
+```
+
+Then reload: `source ~/.zshrc`
+
+### Accessing Original Commands
+
+Use backslash prefix to access original commands when needed:
+
+```bash
+\cat file.txt      # Original cat, not bat
+\ls -la            # Original ls, not eza
+\grep pattern      # Original grep, not ripgrep
 ```
 
 ---

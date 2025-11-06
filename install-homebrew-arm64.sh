@@ -1043,10 +1043,14 @@ generate_alias_report() {
     fi
 
     # Safety Warning
+    echo -e "${GREEN}${BOLD}🔒 Safety First:${NC}"
+    echo -e "  ${GREEN}•${NC} POSIX command overrides (cat, ls, grep, find, ps) are ${BOLD}COMMENTED OUT${NC} by default"
+    echo -e "  ${GREEN}•${NC} Safe alternatives (batcat, ezals, rgg, fdf, procps) are ${BOLD}ENABLED${NC}"
+    echo -e "  ${GREEN}•${NC} Review and uncomment overrides ONLY after testing in non-production"
+    echo ""
     echo -e "${YELLOW}${BOLD}⚠️  Important Notes:${NC}"
-    echo -e "  ${YELLOW}•${NC} Aliases that override default commands (cat, ls, grep, find) may affect scripts"
-    echo -e "  ${YELLOW}•${NC} Test aliases before committing to your shell config"
-    echo -e "  ${YELLOW}•${NC} You can always use the original command with: \\command (e.g., \\cat, \\ls)"
+    echo -e "  ${YELLOW}•${NC} Command overrides may break scripts expecting POSIX-compliant behavior"
+    echo -e "  ${YELLOW}•${NC} Use \\cat, \\ls, \\grep, \\find, \\ps to access original commands"
     echo -e "  ${YELLOW}•${NC} Version manager init commands are REQUIRED for those tools to work"
     echo ""
 
@@ -1105,14 +1109,25 @@ generate_aliases_file() {
 #   Then reload your shell:
 #     source ~/.zshrc
 #
+# 🔒 SAFETY FIRST:
+#   - POSIX command overrides (cat, ls, grep, find, ps) are COMMENTED OUT by default
+#   - Safe alternative aliases (batcat, ezals, rgg, fdf, procps) are ENABLED
+#   - Uncomment overrides ONLY after testing in non-production environments
+#   - Use \cat, \ls, \grep, \find, \ps to access original commands
+#
 # IMPORTANT:
 #   - Must be placed at the END of your shell config file
 #   - Loading too early breaks compinit, SDKMAN, and other tools
-#   - Aliases override system commands; use \cat, \ls, etc. for originals
+#   - All aliases and configs are idempotent (safe to source multiple times)
+#
+# RISK LEVELS (based on 2023-2025 compatibility research):
+#   🔴 HIGH RISK: cat, grep, find - breaks pipelines, option differences
+#   🟡 MEDIUM RISK: ls, ps - output format/parsing issues
+#   ✅ SAFE: Non-overriding aliases (batcat, ezals, etc.)
 #
 # NOTE:
 #   - This file is regenerated each time you run the installer
-#   - All aliases are idempotent (safe to source multiple times)
+#   - See https://github.com/joaquimscosta/homebrew-arm64-migration/docs
 #
 # ============================================================
 
@@ -1132,44 +1147,97 @@ ALIASES_EOF
 # ============================================================
 # Modern CLI Replacements
 # ============================================================
-# ⚠️  WARNING: These override default commands
-# Use \cat, \ls, \grep, \find to access originals
+# 🔒 SAFETY: POSIX command overrides are COMMENTED OUT by default
+#
+# RISK LEVELS (based on script compatibility research):
+#   🔴 HIGH RISK: cat, grep, find - breaks pipelines, options differ
+#   🟡 MEDIUM RISK: ls, ps - output format/parsing issues
+#
+# RECOMMENDATIONS:
+#   ✅ Use non-overriding aliases (batcat, ezals, etc.) - SAFE
+#   ⚠️  Uncomment overrides ONLY after testing in non-production
+#   📖 Use \cat, \ls, \grep, \find to access originals when needed
+#
+# Reference: https://github.com/joaquimscosta/homebrew-arm64-migration/docs
 
 ALIASES_EOF
 
         if [[ " ${INSTALLED_PACKAGES[*]} " =~ "bat" ]]; then
             cat >> "$aliases_file" <<'ALIASES_EOF'
-# Better 'cat' with syntax highlighting
-alias cat='bat'
+# ─────────────────────────────────────────────────────────────
+# bat - Better 'cat' with syntax highlighting
+# ─────────────────────────────────────────────────────────────
+# 🔴 HIGH RISK: Breaks scripts using pipelines with -n flag
+#
+# SAFE ALTERNATIVES (enabled by default):
+alias batcat='bat'
+alias bathelp='bat --language=help --style=plain'
 alias -g -- --help='--help 2>&1 | bat --language=help --style=plain'
+
+# OVERRIDE (uncomment to replace 'cat'):
+# alias cat='bat'
+# ⚠️  WARNING: This may break scripts expecting plain text output
+# ⚠️  Use \cat to access original cat command
 
 ALIASES_EOF
         fi
 
         if [[ " ${INSTALLED_PACKAGES[*]} " =~ "eza" ]]; then
             cat >> "$aliases_file" <<'ALIASES_EOF'
-# Modern 'ls' replacement
-alias ls='eza --icons --group-directories-first'
+# ─────────────────────────────────────────────────────────────
+# eza - Modern 'ls' replacement with icons and colors
+# ─────────────────────────────────────────────────────────────
+# 🟡 MEDIUM RISK: Different option support (e.g., -ltra differs)
+#
+# SAFE ALTERNATIVES (enabled by default):
+alias ezals='eza --icons --group-directories-first'
 alias ll='eza -l --icons --group-directories-first'
 alias la='eza -la --icons --group-directories-first'
 alias lt='eza --tree --level=2 --icons'
+alias tree='eza --tree --icons'
+
+# OVERRIDE (uncomment to replace 'ls'):
+# alias ls='eza --icons --group-directories-first'
+# ⚠️  WARNING: May break scripts parsing ls output
+# ⚠️  Use \ls to access original ls command
 
 ALIASES_EOF
         fi
 
         if [[ " ${INSTALLED_PACKAGES[*]} " =~ "ripgrep" ]]; then
             cat >> "$aliases_file" <<'ALIASES_EOF'
-# Better 'grep' - faster with .gitignore support
-alias grep='rg'
-alias rg='rg -C 3'  # 3 lines of context
+# ─────────────────────────────────────────────────────────────
+# ripgrep - Faster 'grep' with .gitignore support
+# ─────────────────────────────────────────────────────────────
+# 🔴 HIGH RISK: Different options, defaults, and recursion behavior
+#
+# SAFE ALTERNATIVES (enabled by default):
+alias rgg='rg'
+alias rg='rg -C 3'  # ripgrep with 3 lines of context
+
+# OVERRIDE (uncomment to replace 'grep'):
+# alias grep='rg'
+# ⚠️  WARNING: Breaks scripts relying on specific grep options
+# ⚠️  Use \grep to access original grep command
 
 ALIASES_EOF
         fi
 
         if [[ " ${INSTALLED_PACKAGES[*]} " =~ "fd" ]]; then
             cat >> "$aliases_file" <<'ALIASES_EOF'
-# Simpler, faster 'find'
-alias find='fd'
+# ─────────────────────────────────────────────────────────────
+# fd - Simpler, faster 'find' (~80% coverage of find use cases)
+# ─────────────────────────────────────────────────────────────
+# 🔴 HIGH RISK: Treats patterns as regex by default, ignores hidden files
+#
+# SAFE ALTERNATIVES (enabled by default):
+alias fdf='fd'
+alias fda='fd --hidden --no-ignore'  # find all files (including hidden)
+
+# OVERRIDE (uncomment to replace 'find'):
+# alias find='fd'
+# ⚠️  WARNING: Only covers ~80% of find functionality
+# ⚠️  Use \find to access original find command
 
 ALIASES_EOF
         fi
@@ -1262,11 +1330,22 @@ ALIASES_EOF
 # Git Enhancements
 # ============================================================
 
-# Configure git to use delta for diffs
-git config --global core.pager delta
-git config --global interactive.diffFilter 'delta --color-only'
-git config --global delta.navigate true
-git config --global merge.conflictstyle diff3
+# Configure git to use delta for diffs (idempotent - only sets if not configured)
+if ! git config --global --get core.pager &>/dev/null; then
+    git config --global core.pager delta
+fi
+
+if ! git config --global --get interactive.diffFilter &>/dev/null; then
+    git config --global interactive.diffFilter 'delta --color-only'
+fi
+
+if ! git config --global --get delta.navigate &>/dev/null; then
+    git config --global delta.navigate true
+fi
+
+if ! git config --global --get merge.conflictstyle &>/dev/null; then
+    git config --global merge.conflictstyle diff3
+fi
 
 ALIASES_EOF
     fi
@@ -1292,9 +1371,16 @@ ALIASES_EOF
 # ============================================================
 # Process Management
 # ============================================================
+# procs - Modern 'ps' replacement with better formatting
+# 🟡 MEDIUM RISK: Output format differs from ps (breaks parsing)
+#
+# SAFE ALTERNATIVES (enabled by default):
+alias procps='procs'
 
-# Modern 'ps' replacement
-alias ps='procs'
+# OVERRIDE (uncomment to replace 'ps'):
+# alias ps='procs'
+# ⚠️  WARNING: Output format completely different from ps
+# ⚠️  Use \ps to access original ps command
 
 ALIASES_EOF
     fi
@@ -1384,10 +1470,25 @@ ALIASES_EOF
 # ============================================================
 # Important Notes
 # ============================================================
-# • Aliases that override default commands (cat, ls, grep, find) may affect scripts
-# • Test aliases before committing to your shell config
-# • You can always use the original command with: \command (e.g., \cat, \ls)
-# • Version manager init commands are REQUIRED for those tools to work
+# ✅ SAFE ALIASES (enabled by default):
+#    • batcat, ezals, rgg, fdf, procps - use modern tools without overriding
+#    • ll, la, lt - helpful eza shortcuts
+#    • All Kubernetes, git, and development tool shortcuts
+#
+# ⚠️  COMMAND OVERRIDES (commented out by default):
+#    • cat→bat, ls→eza, grep→rg, find→fd, ps→procs
+#    • Uncomment ONLY after testing in non-production
+#    • May break scripts expecting POSIX-compliant behavior
+#
+# 📖 ACCESS ORIGINALS:
+#    • Use \cat, \ls, \grep, \find, \ps to bypass aliases
+#
+# 🔧 VERSION MANAGERS:
+#    • pyenv, rbenv, fnm init commands are REQUIRED for those tools
+#    • These commands are idempotent (safe to run multiple times)
+#
+# 📚 DOCUMENTATION:
+#    • See https://github.com/joaquimscosta/homebrew-arm64-migration
 # ============================================================
 ALIASES_EOF
 
