@@ -1095,17 +1095,24 @@ generate_aliases_file() {
 # Generated on: $(date '+%Y-%m-%d %H:%M:%S')
 #
 # USAGE:
-#   Add this line to your ~/.zshrc (or ~/.bashrc for Bash):
+#   Add these lines to the END of your ~/.zshrc (or ~/.bashrc for Bash):
 #
-#     source ${SCRIPT_DIR}/.aliases
+#     # Load custom aliases (must be last to avoid breaking initialization)
+#     if [ -f "${HOME}/.aliases" ]; then
+#         source "${HOME}/.aliases"
+#     fi
 #
 #   Then reload your shell:
 #     source ~/.zshrc
 #
+# IMPORTANT:
+#   - Must be placed at the END of your shell config file
+#   - Loading too early breaks compinit, SDKMAN, and other tools
+#   - Aliases override system commands; use \cat, \ls, etc. for originals
+#
 # NOTE:
 #   - This file is regenerated each time you run the installer
 #   - All aliases are idempotent (safe to source multiple times)
-#   - You can copy individual aliases instead of sourcing the whole file
 #
 # ============================================================
 
