@@ -22,6 +22,9 @@ TODO.md
 logs/
 homebrew-install-*.log
 
+# Generated aliases file
+.aliases
+
 # Temporary files
 *.tmp
 *.temp

@@ -138,7 +138,7 @@ The script installs packages in **11 sequential phases** with interactive prompt
 - System tools: htop, tree, mas, nmap
 - Modern CLI: bat (better cat)
 - Security: openssl@3, ca-certificates
-- Utilities: tldr, diff-so-fancy, coreutils, grep, sqlite
+- Utilities: diff-so-fancy, coreutils, grep, sqlite
 
 **Prompted (Category-Based):**
 - Version managers (uv/pyenv for Python, nvm/fnm for Node.js, rbenv, tfenv)
@@ -149,7 +149,7 @@ The script installs packages in **11 sequential phases** with interactive prompt
 - Modern CLI tools (ripgrep, eza, fd, httpie, delta, fzf, zoxide, procs)
 - Database clients (MySQL, PostgreSQL, SQLite)
 - Media processing (ImageMagick, FFmpeg)
-- GUI apps via Cask (Alfred, iTerm2, Firefox, etc.)
+- GUI apps via Cask (Alfred, Ghostty, Firefox, etc.)
 
 ---
 
@@ -186,7 +186,6 @@ file /opt/homebrew/bin/brew
 | tree | Directory visualization |
 | htop | Process viewer |
 | bat | Modern cat with syntax highlighting |
-| tldr | Quick command examples |
 | mas | Mac App Store CLI |
 | grep | Text search (GNU version) |
 | coreutils | GNU core utilities |
@@ -564,7 +563,7 @@ alias cd='z'  # zoxide
 | App | Description | Priority |
 |-----|-------------|----------|
 | **alfred** | Spotlight replacement, productivity | High |
-| **iterm2** | Advanced terminal emulator | High |
+| **ghostty** | Modern GPU-accelerated terminal emulator | High |
 | **firefox** | Web browser | High |
 | **caffeine** | Keeps Mac awake | Medium |
 | **cheatsheet** | Shows keyboard shortcuts | Medium |
@@ -605,7 +604,7 @@ Architecture Verification:
 ```json
 [
   "git", "gh", "curl", "wget", "jq", "yq", "tree", "htop", "bat",
-  "tldr", "mas", "grep", "coreutils", "sqlite", "openssl@3",
+  "tealdeer", "mas", "grep", "coreutils", "sqlite", "openssl@3",
   "ca-certificates", "diff-so-fancy", "git-lfs", "nmap"
 ]
 ```

@@ -74,7 +74,7 @@ The script guides you through **11 sequential phases**:
 7. **Modern CLI Tools** - ripgrep, eza, fd, bat, delta, fzf, zoxide, procs
 8. **Database Clients** - MySQL, PostgreSQL client libraries
 9. **Media Processing** - ImageMagick, FFmpeg (optional, large)
-10. **GUI Applications** - Homebrew Cask apps (Alfred, iTerm2, Firefox, etc.)
+10. **GUI Applications** - Homebrew Cask apps (Alfred, Ghostty, Firefox, etc.)
 11. **Post-Install Report** - Health check, verification, next steps
 
 ### Version Manager Recommendations

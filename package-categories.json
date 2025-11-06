@@ -19,7 +19,7 @@
       "tree",
       "htop",
       "bat",
-      "tldr",
+      "tealdeer",
       "mas",
       "grep",
       "coreutils",
@@ -381,8 +381,8 @@
         "description": "Web browser",
         "priority": "high"
       },
-      "iterm2": {
-        "description": "Terminal emulator",
+      "ghostty": {
+        "description": "Modern GPU-accelerated terminal emulator",
         "priority": "high"
       }
     },

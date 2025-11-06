@@ -191,16 +191,16 @@ A self-contained, serverless SQL database engine used by countless applications.
 - 📦 GitHub: https://github.com/sqlite/sqlite
 - **Phase**: 2 (Essential Tools - Auto)
 
-### tldr
+### tealdeer
 
-**Simplified Man Pages**
+**Fast TLDR Client**
 
-Community-maintained simplified and community-driven man pages, providing practical examples for common command-line tools.
+A blazingly fast implementation of tldr (Too Long; Didn't Read) in Rust. Provides simplified, practical command-line examples as an approachable complement to traditional man pages.
 
-- 🌐 Website: https://tldr.sh
-- 📦 GitHub: https://github.com/tldr-pages/tldr
+- 🌐 Website: https://github.com/tealdeer-rs/tealdeer
+- 📦 GitHub: https://github.com/tealdeer-rs/tealdeer
 - **Phase**: 2 (Essential Tools - Auto)
-- **Why use this?** Get quick, practical examples without reading lengthy man pages
+- **Why use this?** Get quick command examples instantly without wading through verbose man pages. 10-100x faster than Python/Node.js tldr clients.
 
 ### tree
 
@@ -805,16 +805,16 @@ Free and open-source web browser developed by Mozilla Foundation, focused on pri
 - 📦 GitHub: https://github.com/mozilla/gecko-dev
 - **Phase**: 10 (GUI Applications - Cask)
 
-### iterm2
+### ghostty
 
-**Terminal Emulator for macOS**
+**Modern GPU-Accelerated Terminal Emulator**
 
-Replacement for Terminal with advanced features like split panes, search, autocomplete, and extensive customization.
+A fast, feature-rich terminal emulator written in Zig with GPU acceleration, native macOS integration, and modern features like ligatures, custom shaders, and excellent performance.
 
-- 🌐 Website: https://iterm2.com
-- 📦 GitHub: https://github.com/gnachman/iTerm2
+- 🌐 Website: https://ghostty.org
+- 📦 GitHub: https://github.com/ghostty-org/ghostty
 - **Phase**: 10 (GUI Applications - Cask)
-- **Why use this?** Much more powerful than built-in Terminal.app
+- **Why use this?** Blazing fast GPU-accelerated terminal with modern features and native macOS feel
 
 ---
 
@@ -859,7 +859,7 @@ Replacement for Terminal with advanced features like split panes, search, autoco
 | htop | Essential | 2 | ✅ |
 | httpie | Modern CLI | 7 | ❌ |
 | imagemagick | Media | 9 | ❌ |
-| iterm2 | GUI Apps | 10 | ❌ |
+| ghostty | GUI Apps | 10 | ❌ |
 | jq | Essential | 2 | ✅ |
 | k9s | Cloud/DevOps | 5 | ❌ |
 | kubectl | Cloud/DevOps | 5 | ❌ |
@@ -884,9 +884,9 @@ Replacement for Terminal with advanced features like split panes, search, autoco
 | ruby-build | Version Managers | 3 | ❌ |
 | sqlite | Essential | 2 | ✅ |
 | stern | Cloud/DevOps | 5 | ❌ |
+| tealdeer | Essential | 2 | ✅ |
 | tesseract | Media | 9 | ❌ |
 | tfenv | Version Managers | 3 | ❌ |
-| tldr | Essential | 2 | ✅ |
 | tmux | Modern CLI | 7 | ❌ |
 | tree | Essential | 2 | ✅ |
 | uv | Version Managers | 3 | ❌ |

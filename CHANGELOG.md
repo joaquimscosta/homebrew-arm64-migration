@@ -22,6 +22,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Version manager initialization commands
   - Safety warnings for aliases that override default commands
   - Copy-paste ready format for `.zshrc`/`.bashrc`
+- **Tealdeer**: Fast Rust-based tldr client as essential tool
+  - 10-100x faster than Python/Node.js tldr clients
+  - Provides quick command-line examples as alternative to verbose man pages
+  - Auto-installed in Phase 2 (Essential Tools)
+  - Replaces deprecated tldr package
+- **.aliases File**: Automatic generation of shell aliases file
+  - Creates `.aliases` file with all recommended aliases
+  - Organized by category (CLI tools, Kubernetes, Git, etc.)
+  - Ready to source in ~/.zshrc or ~/.bashrc
+  - Includes usage instructions and safety warnings
+  - Displayed in post-install Next Steps section
+
+### Changed
+- **GUI Applications**: Changed to opt-in by default (prompts now show `[y/N]` instead of `[Y/n]`)
+- **Terminal Emulator**: Replaced iTerm2 with Ghostty (modern GPU-accelerated terminal)
+- **Alias Report Positioning**: Moved recommended shell aliases to appear before health check in post-install report
+- **Tool Count**: 71 → 72 total tools, 18 → 19 essential tools (added tealdeer, removed deprecated tldr)
 
 ### Fixed
 - **Critical Package Issues**:
@@ -29,10 +46,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fixed `google-cloud-sdk` installation method (now correctly installs as cask)
   - Updated script to reflect that kubectx includes kubens binary
 - **Documentation Accuracy**:
-  - Fixed tool count (71 → 72 tools)
   - Corrected category assignments in TOOLS_CATALOG.md
   - Moved ansible and ansible-lint to correct Cloud & DevOps section
-  - Updated category counts to match actual tool distribution
+  - Updated all tool counts across documentation files
 - **Shellcheck Compliance**: Resolved all shellcheck errors and warnings
   - Fixed SC2199: Array expansion syntax in conditionals
   - Removed unused variables (MANIFEST_FILE, description parameter)

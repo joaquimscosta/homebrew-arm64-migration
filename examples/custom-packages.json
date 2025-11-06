@@ -141,7 +141,7 @@
     "development": [
       "visual-studio-code",
       "sublime-text",
-      "iterm2",
+      "ghostty",
       "warp",
       "tableplus",
       "postman"
@@ -196,7 +196,7 @@
       },
       "additional_casks": [
         "visual-studio-code",
-        "iterm2",
+        "ghostty",
         "docker",
         "tableplus",
         "postman"
@@ -220,7 +220,7 @@
       ],
       "additional_casks": [
         "visual-studio-code",
-        "iterm2",
+        "ghostty",
         "docker"
       ]
     },
