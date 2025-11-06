@@ -332,4 +332,4 @@ If this tool helped you migrate to ARM64 Homebrew or set up your new Mac, consid
 
 ---
 
-**Made with ❤️ for the Apple Silicon community**
+**🔧 Crafted for seamless ARM64 migration**
