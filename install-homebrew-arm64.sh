@@ -924,7 +924,7 @@ generate_alias_report() {
         echo -e "${BOLD}${MAGENTA}## Kubernetes Shortcuts${NC}"
         echo ""
 
-        if [[ " ${INSTALLED_PACKAGES[*]} " =~ "kubectl" ]]; then
+        if [[ " ${INSTALLED_PACKAGES[*]} " =~ "kubernetes-cli" ]] || [[ " ${INSTALLED_PACKAGES[*]} " =~ "kubectl" ]]; then
             echo -e "  ${GREEN}# kubectl shortcuts${NC}"
             echo "  alias k='kubectl'"
             echo "  alias kgp='kubectl get pods'"
@@ -1252,7 +1252,8 @@ ALIASES_EOF
 # ============================================================
 
 # zoxide - smart 'cd' that learns your habits
-eval "$(zoxide init --cmd cd zsh)"  # Makes 'cd' use zoxide
+# Only initialize in interactive shells to avoid issues with automation tools
+[[ -o interactive ]] && eval "$(zoxide init --cmd cd zsh)"  # Makes 'cd' use zoxide
 # Or use 'z' command: eval "$(zoxide init zsh)"
 
 ALIASES_EOF
@@ -1266,7 +1267,8 @@ ALIASES_EOF
 # ============================================================
 
 # fzf - fuzzy finder for files, history, processes
-eval "$(fzf --zsh)"  # Enable fzf keybindings and completion
+# Only initialize in interactive shells (keybindings don't work in non-interactive shells)
+[[ -o interactive ]] && eval "$(fzf --zsh)"  # Enable fzf keybindings and completion
 
 ALIASES_EOF
     fi
@@ -1288,7 +1290,7 @@ ALIASES_EOF
 
 ALIASES_EOF
 
-        if [[ " ${INSTALLED_PACKAGES[*]} " =~ "kubectl" ]]; then
+        if [[ " ${INSTALLED_PACKAGES[*]} " =~ "kubernetes-cli" ]] || [[ " ${INSTALLED_PACKAGES[*]} " =~ "kubectl" ]]; then
             cat >> "$aliases_file" <<'ALIASES_EOF'
 # kubectl shortcuts
 alias k='kubectl'
@@ -1304,8 +1306,8 @@ alias kex='kubectl exec -it'
 alias kaf='kubectl apply -f'
 alias kpf='kubectl port-forward'
 
-# kubectl completion
-source <(kubectl completion zsh)
+# kubectl completion (only in interactive shells)
+[[ -o interactive ]] && source <(kubectl completion zsh)
 
 ALIASES_EOF
         fi

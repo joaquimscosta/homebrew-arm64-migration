@@ -53,6 +53,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fixed SC2199: Array expansion syntax in conditionals
   - Removed unused variables (MANIFEST_FILE, description parameter)
   - Cleaned up incomplete START_AT_PHASE feature
+- **Shell Initialization Compatibility**: Fixed issues with non-interactive shells
+  - Added interactive shell checks to zoxide, fzf, and kubectl completion initialization
+  - Prevents initialization errors in automation tools and CI/CD environments
+  - Uses `[[ -o interactive ]]` guard to only initialize in interactive shells
+  - Fixed kubectl aliases generation (detect `kubernetes-cli` package name)
 
 ### Improved
 - **Installation Script** (`install-homebrew-arm64.sh`):
