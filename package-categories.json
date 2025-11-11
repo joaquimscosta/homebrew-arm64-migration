@@ -263,6 +263,19 @@
     "priority": "optional"
   },
 
+  "ai_tools": {
+    "description": "AI coding assistants and CLI tooling",
+    "prompt": "Install AI developer tools?",
+    "packages": [
+      "gemini-cli"
+    ],
+    "casks": [
+      "claude-code",
+      "codex"
+    ],
+    "note": "Prompts default to 'No' to prevent accidental installs. Enable only if you regularly use these assistants."
+  },
+
   "compression_libs": {
     "description": "Compression libraries (auto-installed as dependencies)",
     "packages": [

@@ -51,7 +51,7 @@ homebrew-arm64-migration/
 ### Scripts
 
 #### `install-homebrew-arm64.sh` (850 lines)
-**Purpose:** Main installation script with 11 sequential phases
+**Purpose:** Main installation script with 12 sequential phases
 
 **Features:**
 - Strict ARM64 architecture verification
@@ -80,8 +80,9 @@ homebrew-arm64-migration/
 7. Modern CLI Tools (ripgrep, eza, fd, bat, delta)
 8. Database Clients (MySQL, PostgreSQL)
 9. Media Processing (ImageMagick, FFmpeg)
-10. GUI Applications (Casks)
-11. Post-Install Report
+10. AI Developer Tools (Claude Code, Codex, Gemini CLI)
+11. GUI Applications (Casks)
+12. Post-Install Report
 
 #### `cleanup-homebrew-remnants.sh` (135 lines)
 **Purpose:** Remove Intel Homebrew remnants after migration

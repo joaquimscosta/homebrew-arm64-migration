@@ -166,6 +166,28 @@ safe_brew_install() {
     fi
 }
 
+safe_brew_cask_install() {
+    local cask="$1"
+
+    if [ "$DRY_RUN" = true ]; then
+        echo -e "  ${YELLOW}[DRY RUN]${NC} Would install cask: ${cask}"
+        return 0
+    fi
+
+    echo -e "  ${BLUE}→${NC} Installing ${BOLD}${cask}${NC} (cask)..."
+
+    if "${HOMEBREW_ARM64_BIN}" install --cask "${cask}" 2>&1 | tee -a "$INSTALL_LOG"; then
+        INSTALLED_PACKAGES+=("${cask} (cask)")
+        echo -e "  ${GREEN}✓${NC} Installed: ${cask}"
+        log_message "SUCCESS: Installed ${cask} (cask)"
+        return 0
+    else
+        echo -e "  ${RED}✗${NC} Failed to install: ${cask}"
+        log_message "FAILED: ${cask} (cask)"
+        return 1
+    fi
+}
+
 check_architecture() {
     local arch
     arch=$(uname -m)
@@ -605,19 +627,7 @@ install_cloud_devops() {
         done
 
         # Google Cloud SDK must be installed as a cask
-        if [ "$DRY_RUN" = true ]; then
-            echo -e "  ${YELLOW}[DRY RUN]${NC} Would install cask: google-cloud-sdk"
-        else
-            echo -e "  ${BLUE}→${NC} Installing ${BOLD}google-cloud-sdk${NC} (cask)..."
-            if "${HOMEBREW_ARM64_BIN}" install --cask google-cloud-sdk 2>&1 | tee -a "$INSTALL_LOG"; then
-                INSTALLED_PACKAGES+=("google-cloud-sdk (cask)")
-                echo -e "  ${GREEN}✓${NC} Installed: google-cloud-sdk"
-                log_message "SUCCESS: Installed google-cloud-sdk (cask)"
-            else
-                echo -e "  ${RED}✗${NC} Failed to install: google-cloud-sdk"
-                log_message "FAILED: google-cloud-sdk (cask)"
-            fi
-        fi
+        safe_brew_cask_install "google-cloud-sdk"
 
         echo ""
         print_info "Post-install setup:"
@@ -779,11 +789,59 @@ install_media_processing() {
 }
 
 ################################################################################
+# AI Developer Tools
+################################################################################
+
+install_ai_tools() {
+    print_phase "10" "AI Developer Tools"
+
+    print_info "Optional CLIs for interacting with Claude, Codex, and Gemini assistants"
+    echo ""
+
+    show_explanation "AI Coding Assistants" \
+        "${GREEN}Tools included:${NC}
+  • ${BOLD}Gemini CLI${NC} - Manage Google Gemini models from the terminal
+  • ${BOLD}Claude Code${NC} - Desktop app for Claude-based coding workflows
+  • ${BOLD}Codex${NC} - GUI client for AI pair programming
+
+${YELLOW}Default:${NC} Prompts are set to 'No' to avoid accidental installs. Enable only if you actively use these tools."
+
+    local installed_any=false
+
+    if confirm_action "Install Gemini CLI (brew)?" "n"; then
+        safe_brew_install "gemini-cli"
+        installed_any=true
+    else
+        print_info "Skipped Gemini CLI"
+    fi
+
+    if confirm_action "Install Claude Code (cask)?" "n"; then
+        safe_brew_cask_install "claude-code"
+        installed_any=true
+    else
+        print_info "Skipped Claude Code"
+    fi
+
+    if confirm_action "Install Codex (cask)?" "n"; then
+        safe_brew_cask_install "codex"
+        installed_any=true
+    else
+        print_info "Skipped Codex"
+    fi
+
+    if [ "$installed_any" = true ]; then
+        print_success "AI developer tools installation complete"
+    else
+        print_info "No AI developer tools selected"
+    fi
+}
+
+################################################################################
 # GUI Applications (Casks)
 ################################################################################
 
 install_casks() {
-    print_phase "10" "GUI Applications (Homebrew Cask)"
+    print_phase "11" "GUI Applications (Homebrew Cask)"
 
     print_info "Install desktop applications via Homebrew Cask"
     echo ""
@@ -804,12 +862,7 @@ install_casks() {
             local description="${cask_descriptions[$i]}"
             echo -e "\n${BOLD}${cask}${NC} - ${description}"
             if confirm_action "Install ${cask}?" "n"; then
-                if [ "$DRY_RUN" = true ]; then
-                    echo -e "  ${YELLOW}[DRY RUN]${NC} Would install cask: ${cask}"
-                else
-                    "${HOMEBREW_ARM64_BIN}" install --cask "${cask}" 2>&1 | tee -a "$INSTALL_LOG"
-                    INSTALLED_PACKAGES+=("${cask} (cask)")
-                fi
+                safe_brew_cask_install "${cask}"
             fi
         done
 
@@ -1504,7 +1557,7 @@ ALIASES_EOF
 ################################################################################
 
 generate_post_install_report() {
-    print_phase "11" "Post-Installation Report"
+    print_phase "12" "Post-Installation Report"
 
     # Show alias recommendations first (before health check)
     generate_alias_report
@@ -1659,6 +1712,7 @@ main() {
     install_modern_cli_tools
     install_database_clients
     install_media_processing
+    install_ai_tools
     install_casks
 
     # Final report (includes alias report)

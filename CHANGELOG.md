@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **AI Developer Tools Phase**: New optional category for Claude Code, Codex, and Gemini CLI
+  - Interactive prompts default to "No" for each tool to avoid accidental installs
+  - Integrates as Phase 10 between Media Processing and GUI Applications
+  - Shared rationale block explains when to enable these assistants
 - **Tools Catalog** (`TOOLS_CATALOG.md`): Comprehensive documentation of all 72 tools
   - Detailed descriptions for each tool (Essential, Version Managers, Languages, Cloud/DevOps, Build Tools, Modern CLI, Database, Media, GUI)
   - Official website and GitHub repository links for every tool
@@ -35,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Displayed in post-install Next Steps section
 
 ### Changed
+- **Cask Installs**: Added `safe_brew_cask_install` helper so Google Cloud SDK, GUI apps, and new AI tools share consistent logging and dry-run output
 - **GUI Applications**: Changed to opt-in by default (prompts now show `[y/N]` instead of `[Y/n]`)
 - **Terminal Emulator**: Replaced iTerm2 with Ghostty (modern GPU-accelerated terminal)
 - **Alias Report Positioning**: Moved recommended shell aliases to appear before health check in post-install report

@@ -16,7 +16,7 @@ Migrating from Intel Homebrew (`/usr/local`) to native ARM64 Homebrew (`/opt/hom
 - **🔒 Strict ARM64 Verification** - Ensures you're installing native ARM64 binaries, not x86_64 under Rosetta 2
 - **🎓 Educational Prompts** - Explains *why* to use modern tools (uv, fnm, SDKMAN) over traditional approaches
 - **⚡ Modern Version Managers** - Prioritizes uv for Python, fnm/Volta for Node.js, SDKMAN for Java/JVM
-- **📦 Smart Package Selection** - 146 packages analyzed, categorized into 11 installation phases
+- **📦 Smart Package Selection** - 146+ packages analyzed, organized into 12 installation phases
 - **🔄 Auto-Upgrade Deprecated** - Automatically replaces python@2, terraform, etc. with modern alternatives
 - **☁️ Multi-Cloud Support** - AWS CLI, Azure CLI, Google Cloud SDK with post-install setup guidance
 - **🛡️ Safe & Reversible** - Dry-run mode, comprehensive logging, health checks
@@ -64,7 +64,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/joaquimscosta/homebrew-a
 
 ### Installation Phases
 
-The script guides you through **11 sequential phases**:
+The script guides you through **12 sequential phases**:
 
 1. **Homebrew Installation** - Installs ARM64 Homebrew to `/opt/homebrew`
 2. **Essential Tools** - Auto-installs 19 must-have developer tools
@@ -75,8 +75,9 @@ The script guides you through **11 sequential phases**:
 7. **Modern CLI Tools** - ripgrep, eza, fd, bat, delta, fzf, zoxide, procs
 8. **Database Clients** - MySQL, PostgreSQL client libraries
 9. **Media Processing** - ImageMagick, FFmpeg (optional, large)
-10. **GUI Applications** - Homebrew Cask apps (Alfred, Ghostty, Firefox, etc.)
-11. **Post-Install Report** - Health check, verification, next steps
+10. **AI Developer Tools** - Optional installs for Claude Code, Codex, Gemini CLI
+11. **GUI Applications** - Homebrew Cask apps (Alfred, Ghostty, Firefox, etc.)
+12. **Post-Install Report** - Health check, verification, next steps
 
 ### Version Manager Recommendations
 
@@ -135,7 +136,7 @@ sdk default java 21.0.1-tem
 Options:
   --dry-run         Preview installation without making changes
   --auto-yes        Auto-approve all prompts (use with caution)
-  --start-at=N      Start at specific phase (1-11)
+  --start-at=N      Start at specific phase (1-12)
   --help            Show help message
 ```
 
